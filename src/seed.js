@@ -38,7 +38,7 @@ dbConnect().then(async ()=> {
 
     let consultation = new Services({
         name: "Consultation",
-        price: "0",
+        price: "Free!",
         description: "Free consultation with each appointment.\\nWe will discuss final prices and approximate length of appointment.\\nProvide full information on what will be completed throughout the appointment.",
         duration: "15"
     });
