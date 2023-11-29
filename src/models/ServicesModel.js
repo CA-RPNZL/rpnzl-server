@@ -1,5 +1,5 @@
 // Import Mongoose
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ServicesSchema = new Schema({
@@ -21,11 +21,13 @@ const ServicesSchema = new Schema({
     duration: {
         type: Number,
         required: true,
-        unique: false}
+        unique: false
+    }
 });
 
+
 // Create Services document
-const Services = mongoose.model('Services', ServicesSchema);
+const Services = mongoose.model("Services", ServicesSchema);
 
 module.exports = {
     Services
