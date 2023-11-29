@@ -20,7 +20,6 @@ dbConnect().then(async ()=> {
         description: "Includes: Hair wash, blow dry and cut. Prices and time will vary due to thickness and length of hair.",
         duration: "30"
     });
-    await cut.save();
 
     let perm = new Services({
         name: "Perm",
@@ -28,7 +27,6 @@ dbConnect().then(async ()=> {
         description: "Includes: Perm, wash and styling. Prices and time will vary due to thickness and length of hair.",
         duration: "120"
     });
-    await perm.save();
 
     let colour = new Services({
         name: "Colour",
@@ -36,7 +34,6 @@ dbConnect().then(async ()=> {
         description: "Includes: Colouring, hair wash and styling. Prices and time will vary due to thickness and length of hair.",
         duration: "120"
     });
-    await colour.save();
 
     let cutAndColour = new Services({
         name: "Cut & colour",
@@ -44,7 +41,6 @@ dbConnect().then(async ()=> {
         description: "Includes: Hair wash, colour, cut and styling. Prices and time will vary due to thickness and length of hair.",
         duration: "150"
     });
-    await cutAndColour.save();
 
     let consultation = new Services({
         name: "Consultation",
@@ -52,7 +48,11 @@ dbConnect().then(async ()=> {
         description: "Free consultation with each appointment. We will discuss final prices and approximate length of appointment.\\nProvide full information on what will be completed throughout the appointment.",
         duration: "15"
     });
-    await consultation.save();
+
+    // Create and save salon services
+    await Services.create([cut, perm, colour, cutAndColour, consultation]).catch(error => {
+        console.log("An error occurred:\n" + error)
+    });
 
 
 });
