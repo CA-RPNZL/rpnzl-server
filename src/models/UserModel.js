@@ -32,6 +32,10 @@ const UserSchema = new Schema({
         type: Boolean,
         default: false
     },
+    is_hairstylist: {
+        type: Boolean,
+        default: false
+    }
 
 });
 
