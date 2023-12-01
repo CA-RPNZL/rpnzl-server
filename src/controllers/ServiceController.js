@@ -21,6 +21,11 @@ router.get("/", async (request, response) => {
 
 // Show service by service id
 // Doesn't need authentication
+router.get("/id/:id", async (request, response) => {
+    let result = await Service.findById(request.params.id)
+
+    response.json(result);
+})
 
 // Create a new service
 // Need admin authentication
