@@ -1,5 +1,5 @@
 // Import Express JS
-const express = require('express');
+const express = require("express");
 
 // Create an instance of Express
 const app = express();
@@ -10,9 +10,10 @@ app.use(express.json());
 // Parse incoming URL encoded form data from HTTP request
 app.use(express.urlencoded({extended:true}));
 
+
 // GET
-app.get('/', (request, response) => {
-    response.send('Hello world!');
+app.get("/", (request, response) => {
+    response.send("Hello world!");
 });
 
 
