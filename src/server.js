@@ -16,6 +16,10 @@ app.get("/", (request, response) => {
     response.send("Hello world!");
 });
 
+// Attach service controller routes
+const serviceController = require("./controllers/ServiceController");
+app.use("/services", serviceController);
+
 
 module.exports = {
     app
