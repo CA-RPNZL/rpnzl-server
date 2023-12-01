@@ -2,7 +2,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const ServicesSchema = new Schema({
+// Create the Service schema
+const ServiceSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -26,9 +27,9 @@ const ServicesSchema = new Schema({
 });
 
 
-// Create Services document
-const Services = mongoose.model("Services", ServicesSchema);
+// Create the Service model
+const Service = mongoose.model("Services", ServiceSchema);
 
 module.exports = {
-    Services
+    Service
 }
