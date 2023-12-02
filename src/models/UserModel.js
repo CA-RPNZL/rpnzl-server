@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema;
 
+// Create User Schema
 const UserSchema = new Schema({
     firstName: {
         type: String,
@@ -35,12 +36,25 @@ const UserSchema = new Schema({
     is_hairstylist: {
         type: Boolean,
         default: false
-    }
-
+    },
+      // Additional fields for hairstylists
+    bio: {
+        type: String
+    },
+    services: [
+        {
+            // refernceing the Service Model
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Service'
+        },
+    ],
 });
 
+
+// Create User Model
 const User = mongoose.model('User', UserSchema);
 
+// Export User Model
 module.exports = {
     User
 }

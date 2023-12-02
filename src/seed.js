@@ -21,6 +21,8 @@ dbConnect().then(async ()=> {
         email: 'michelle@mail.com',
         password: 'hairstylistpassword',
         is_hairstylist: true,
+        // Uses ID value of services eg. [cutServiceID, consultationServiceId]
+        services: [0, 4],
     });
     let newUser = new User({
         firstName: 'Bianca',
