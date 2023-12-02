@@ -4,6 +4,7 @@ const express = require("express");
 // Create an instance of Express
 const app = express();
 
+
 // Configure Helmet for server security
 const helmet = require("helmet");
 app.use(helmet());
@@ -14,6 +15,20 @@ app.use(helmet.contentSecurityPolicy({
         defaultSrc:["'self'"]
     }
 }));
+
+
+// Configure CORS
+const cors = require("cors");
+// Allowed origin array
+var corsOptions = {
+    origin: [
+        "http://localhost:3000",
+        "https://ca-rpnzl-15265a6e99eb.herokuapp.com/"
+    ],
+    optionsSuccessStatus: 200;
+};
+app.use(cors(corsOptions));
+
 
 // Parse incoming JSON data from HTTP request
 app.use(express.json());
