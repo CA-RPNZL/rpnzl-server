@@ -4,6 +4,17 @@ const express = require("express");
 // Create an instance of Express
 const app = express();
 
+// Configure Helmet for server security
+const helmet = require("helmet");
+app.use(helmet());
+app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.referrerPolicy());
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc:["'self'"]
+    }
+}));
+
 // Parse incoming JSON data from HTTP request
 app.use(express.json());
 

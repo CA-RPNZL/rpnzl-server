@@ -8,10 +8,10 @@ async function dbConnect() {
         await mongoose.connect(process.env.DB_URI);
         console.log("Database connected!");
     } catch (error) {
-        console.log(`This is ${process.env.DB_URI}`);
         console.log(`Database failed to connect. Error:\n${JSON.stringify(error)}`);
     }
 }
+
 
 module.exports = {
     dbConnect
