@@ -46,6 +46,10 @@ app.get("/", (request, response) => {
 const serviceController = require("./controllers/ServiceController");
 app.use("/services", serviceController);
 
+// Attach auth controller routes
+const authController = require("./controllers/AuthController");
+app.use("/", authController);
+
 
 module.exports = {
     app
