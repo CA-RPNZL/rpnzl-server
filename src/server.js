@@ -25,7 +25,7 @@ var corsOptions = {
         "http://localhost:3000",
         "https://ca-rpnzl-15265a6e99eb.herokuapp.com/"
     ],
-    optionsSuccessStatus: 200;
+    optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 
