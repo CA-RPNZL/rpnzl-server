@@ -1,12 +1,12 @@
+// Import and configure dotenv
+require("dotenv").config();
+
 // Import Mongoose
 const mongoose = require("mongoose");
+
 const { dbConnect } = require("./database");
 const { Service } = require("./models/ServiceModel");
 const { User } = require("./models/UserModel");
-
-
-// Import and configure dotenv
-require("dotenv").config();
 
 
 // Connect to the database
