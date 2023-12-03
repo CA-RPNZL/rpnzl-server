@@ -1,14 +1,24 @@
 // Import Express JS
-const express = require('express');
-
+const express = require("express");
 
 // Create an instance of Express
 const app = express();
 
+// Parse incoming JSON data from HTTP request
+app.use(express.json());
 
-app.get('/', (request, response) => {
-    response.send('Hello world!');
+// Parse incoming URL encoded form data from HTTP request
+app.use(express.urlencoded({extended:true}));
+
+
+// GET
+app.get("/", (request, response) => {
+    response.send("Hello world!");
 });
+
+// Attach service controller routes
+const serviceController = require("./controllers/ServiceController");
+app.use("/services", serviceController);
 
 
 module.exports = {
