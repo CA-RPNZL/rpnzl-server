@@ -1,11 +1,11 @@
+// Import and configure dotenv
+require("dotenv").config();
+
 // Import bcrypt
 const bcrypt = require("bcryptjs");
 
 // Import jsonwebtoken
 const jwt = require("jsonwebtoken");
-
-// Import and configure dotenv
-require("dotenv").config();
 
 
 // Check if passwords match
@@ -65,24 +65,8 @@ function validateJwt(request, response, next) {
 };
 
 
-// Authorise as admin
-function authAsAdmin(request, response, next) {
-    // Check if the user is admin
-    if (request.user.is_admin) {
-        // If user is admin, continue to next middleware
-        next();
-    } else {
-        // Handle error if user is not admin
-        return response.status(403).json({
-            error: "You do not have authorisation to proceed."
-        });
-    };
-};
-
-
 module.exports = {
     comparePassword,
     generateJwt,
-    validateJwt,
-    authAsAdmin
+    validateJwt
 };

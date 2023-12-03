@@ -7,8 +7,8 @@ const mongoose = require("mongoose");
 // Create an instance of an Express Router
 const router = express.Router();
 
-const { comparePassword, generateJwt } = require("../functions/auth_function");
 const { User } = require("../models/UserModel");
+const { comparePassword, generateJwt } = require("../functions/authentication");
 
 
 // POST /login
