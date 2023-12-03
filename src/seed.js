@@ -61,7 +61,7 @@ dbConnect().then(async ()=> {
     let newAdmin = new User({
         firstName: "George",
         lastName: "Sheridan",
-        mobileNumber: 0o411222333,
+        mobileNumber: "0411222333",
         email: "admin@mail.com",
         password: "adminpassword",
         is_admin: true,
@@ -70,7 +70,7 @@ dbConnect().then(async ()=> {
     let newHairstylist = new User({
         firstName: "Michelle",
         lastName: "Smith",
-        mobileNumber: 0o433444555,
+        mobileNumber: "0433444555",
         email: "michelle@mail.com",
         password: "hairstylistpassword",
         is_hairstylist: true,
@@ -81,7 +81,7 @@ dbConnect().then(async ()=> {
     let newUser = new User({
         firstName: "Bianca",
         lastName: "Lopez",
-        mobileNumber: 0o477444556,
+        mobileNumber: "0477444556",
         email: "bianca@mail.com",
         password: "clientpassword",
     });
