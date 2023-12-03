@@ -58,23 +58,36 @@ router.post("/", validateJwt, authAsAdmin, async (request, response) => {
 // Need admin authentication
 // PATCH /services/id:id
 router.patch("/id/:id", validateJwt, authAsAdmin, async (request, response) => {
-    // Show updated service
-    let result = await Service.findByIdAndUpdate(request.params.id, request.body, { returnDocument: "after" }).catch(error => error);
+    try {
+        // Show updated service
+        let result = await Service.findByIdAndUpdate(request.params.id, request.body, { returnDocument: "after" });
 
-    response.json({
-        updatedService: result
-    });
+        response.json({
+            updatedService: result
+        });
+    } catch (error) {
+        response.status(500).json({
+            error: error
+        });
+    };
 });
 
 // Delete a service by id
 // Need admin authentication
 // DELETE /services/id/:id
 router.delete("/id/:id", validateJwt, authAsAdmin, async (request, response) => {
-    let result = await Service.findByIdAndDelete(request.params.id);
-
-    response.json({
-        deletedService: result
-    });
+    try {
+        let result = await Service.findByIdAndDelete(request.params.id);
+    
+        response.json({
+            deletedService: result
+        });
+    } catch (error) {
+        res;ponse.status(500).json({
+            error: error
+        })
+    }
 });
+
 
 module.exports = router;

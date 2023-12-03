@@ -13,7 +13,6 @@ const { comparePassword, generateJwt } = require("../functions/authentication");
 
 // POST /login
 // request.body = { email: "admin@rpnzl.com.au", password: "Password1!" }
-// request.response = { jwt: "acbdefgh", valid: true }
 router.post("/login", async (request, response) => {
     try {
         // Find user via email
