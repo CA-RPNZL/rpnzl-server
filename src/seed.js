@@ -54,5 +54,34 @@ dbConnect().then(async ()=> {
         console.log("An error occurred:\n" + error)
     });
 
+    // Appointments
+
+    let biancaUser = await User.findOne({ email: "bianca@mail.com" }).exec();
+    let michelleHairstylist = await User.findOne({ email: "michelle@mail.com" }).exec();
+    let cutService = await Service.findOne({ name: "Cut" }).exec();
+    let consultationService = await Service.findOne({ name: "Consultation" }).exec();
+
+    let appointmentConsultation = new Appointment({
+        client: biancaUser._id,
+        date: new Date("2023-12-05"),
+        time: "10:00 AM",
+        hairstylist: michelleHairstylist._id,
+        service: consultationService._id,
+        duration: consultationService.duration,
+    });
+
+    let appointmentCut = new Appointment({
+        client: biancaUser._id,
+        date: new Date("2023-12-06"),
+        time: "11:00 AM",
+        hairstylist: michelleHairstylist._id,
+        service: cutService._id,
+        duration: cutService.duration,
+    });
+
+    // Create and save the appointments
+    await Appointment.create([appointmentCut, appointmentConsultation]).catch(error => {
+        console.log("An error occurred when seeding the appointments:\n" + error)
+    });
 
 });
