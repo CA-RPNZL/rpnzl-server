@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 // Import bcrypt
 const bcrypt = require("bcryptjs");
 
+
 // Create User Schema
 const UserSchema = new Schema({
     firstName: {
@@ -73,6 +74,7 @@ UserSchema.pre("save", async function (next) {
 
 // Create User Model
 const User = mongoose.model("User", UserSchema);
+
 
 // Export User Model
 module.exports = {
