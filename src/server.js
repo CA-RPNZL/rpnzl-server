@@ -50,6 +50,9 @@ app.use("/services", serviceController);
 const authController = require("./controllers/AuthController");
 app.use("/", authController);
 
+// Attach user controller routes
+const userController = require("./controllers/UserController");
+app.use("/users", userController);
 
 module.exports = {
     app

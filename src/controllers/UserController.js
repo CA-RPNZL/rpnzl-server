@@ -8,9 +8,9 @@ const { User } = require("../models/UserModel");
 router.get("/", async (request, response) => {
   try {
     const result = await User.find({});
-    respond.json(result);
+    response.json(result);
   } catch (error) {
-    respond.status(500).json({ error: error.message });
+    response.status(500).json({ error: error.message });
   }
 });
 
