@@ -1,6 +1,10 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose")
 
 const Schema = mongoose.Schema;
+
+// Import bcrypt
+const bcrypt = require("bcryptjs");
+
 
 // Create User Schema
 const UserSchema = new Schema({
@@ -43,16 +47,34 @@ const UserSchema = new Schema({
     },
     services: [
         {
-            // refernceing the Service Model
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Service'
+            // references the Service Model
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Service"
         },
     ],
 });
 
+// middleware to hash password before User is saved
+
+UserSchema.pre("save", async function (next) {
+    var user = this;
+
+    // if password has not been updated / not new, skip step
+    if (!user.isModified("password")) {
+        return next();
+    }
+
+    // hash and salt if password is new / updated
+    let passwordSalt = await bcrypt.genSalt(17);
+    const hash = await bcrypt.hash(this.password, passwordSalt);
+    this.password = hash;
+    next();
+});
+
 
 // Create User Model
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model("User", UserSchema);
+
 
 // Export User Model
 module.exports = {
