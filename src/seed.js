@@ -1,11 +1,12 @@
-// Import Mongoose
-const mongoose = require("mongoose");
-const { dbConnect } = require("./database");
-const { Service } = require("./models/ServiceModel");
-
-
 // Import and configure dotenv
 require("dotenv").config();
+
+// Import Mongoose
+const mongoose = require("mongoose");
+
+const { dbConnect } = require("./database");
+const { Service } = require("./models/ServiceModel");
+const { User } = require("./models/UserModel");
 
 
 // Connect to the database
@@ -51,8 +52,43 @@ dbConnect().then(async ()=> {
 
     // Create and save salon service
     await Service.create([cut, perm, colour, cutAndColour, consultation]).catch(error => {
-        console.log("An error occurred:\n" + error)
+        console.log("An error occurred when seeding the salon services:\n" + error)
     });
 
 
-});
+    // Users
+
+    let newAdmin = new User({
+        firstName: "George",
+        lastName: "Sheridan",
+        mobileNumber: "0411222333",
+        email: "admin@mail.com",
+        password: "adminpassword",
+        is_admin: true,
+    });
+
+    let newHairstylist = new User({
+        firstName: "Michelle",
+        lastName: "Smith",
+        mobileNumber: "0433444555",
+        email: "michelle@mail.com",
+        password: "hairstylistpassword",
+        is_hairstylist: true,
+        // Uses ID value of services e.g. [cutServiceId, consultationServiceId]
+        services: [cut._id.toString(), consultation._id.toString()],
+    });
+
+    let newUser = new User({
+        firstName: "Bianca",
+        lastName: "Lopez",
+        mobileNumber: "0477444556",
+        email: "bianca@mail.com",
+        password: "clientpassword",
+    });
+
+    // Create and save users
+    await User.create([newAdmin, newHairstylist, newUser]).catch(error => {
+        console.log("An error occurred when seeding the users:\n" + error)
+    });
+})
+.catch((error) => console.log("An error occurred:\n" + error));
