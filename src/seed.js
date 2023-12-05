@@ -46,7 +46,7 @@ dbConnect().then(async ()=> {
     let consultation = new Service({
         name: "Consultation",
         price: "Free!",
-        description: "Free consultation with each appointment. We will discuss final prices and approximate length of appointment.\\nProvide full information on what will be completed throughout the appointment.",
+        description: "Free consultation with each appointment. We will discuss final prices and approximate length of appointment. Provide full information on what will be completed throughout the appointment.",
         duration: "15"
     });
 
@@ -67,15 +67,37 @@ dbConnect().then(async ()=> {
         is_admin: true,
     });
 
-    let newHairstylist = new User({
+    let newHairstylist1 = new User({
         firstName: "Michelle",
         lastName: "Smith",
         mobileNumber: "0433444555",
         email: "michelle@mail.com",
-        password: "hairstylistpassword",
+        password: "hairstylistpassword1",
         is_hairstylist: true,
         // Uses ID value of services e.g. [cutServiceId, consultationServiceId]
-        services: [cut._id.toString(), consultation._id.toString()],
+        services: [cut._id.toString(), consultation._id.toString()]
+    });
+
+    let newHairstylist2 = new User({
+        firstName: "Rachel",
+        lastName: "Green",
+        mobileNumber: "0421645978",
+        email: "rachel@mail.com",
+        password: "hairstylistpassword2",
+        is_hairstylist: true,
+        // Uses ID value of services e.g. [cutServiceId, consultationServiceId]
+        services: [cut._id.toString(), colour._id.toString(), cutAndColour._id.toString(), consultation._id.toString()],
+    });
+
+    let newHairstylist3 = new User({
+        firstName: "Angela",
+        lastName: "Anaconda",
+        mobileNumber: "0412345678",
+        email: "angela@mail.com",
+        password: "hairstylistpassword3",
+        is_hairstylist: true,
+        // Uses ID value of services e.g. [cutServiceId, consultationServiceId]
+        services: [cut._id.toString(), perm._id.toString(), consultation._id.toString()]
     });
 
     let newUser = new User({
@@ -87,7 +109,7 @@ dbConnect().then(async ()=> {
     });
 
     // Create and save users
-    await User.create([newAdmin, newHairstylist, newUser]).catch(error => {
+    await User.create([newAdmin, newHairstylist1, newHairstylist2, newHairstylist3, newUser]).catch(error => {
         console.log("An error occurred when seeding the users:\n" + error)
     });
 })
