@@ -27,6 +27,18 @@ router.get("/id/:id", async (request, respond) => {
     } 
 });
 
+// Update an existing appointment by ID
+// Need user or admin authentication
+// PATCH /appointments/id/:id
+router.patch("/id/:id", async (request, response) => {
+  // Show updated service
+  let result = await Appointment.findByIdAndUpdate(request.params.id, request.body, { returnDocument: "after" }).catch(error => error);
+
+  response.json({
+      updatedAppointment: result
+  });
+});
+
 // Delete appointment by id
 // Need user or admin authentication
 // DELETE /appointments/id/:id
