@@ -24,9 +24,10 @@ async function dbConnect() {
     } catch (error) {
         console.log(`Database failed to connect. Error:\n${JSON.stringify(error)}`);
     }
-}
+};
+
 
 
 module.exports = {
     dbConnect
-}
+};

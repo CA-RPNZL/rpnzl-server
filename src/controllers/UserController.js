@@ -28,6 +28,39 @@ router.get("/id/:id", validateJwt, authAsAdminOrUser, async (request, response) 
   }
 });
 
+// Show users that are hairstylists
+// Only show the first name and last name
+// GET /users/hairstylists?service=:id
+router.get("/hairstylists", async (request, response) => {
+  try {
+    const selectedServiceId = request.query.service;
+
+    // If a service is selected
+    if (selectedServiceId) {
+      query = { is_hairstylist: true, services: selectedServiceId };
+    } else {
+      query = { is_hairstylist: true }
+    }
+
+    const result = await User.find(query).select("firstName lastName services");
+    response.json(result);
+  } catch (error) {
+    response.status(500).json({ error: error.message});
+  }
+});
+
+// // Show users that are hairstylists filtered by services
+// // Only show the first name and last name
+// // GET /users/hairstylists
+// router.get("/hairstylists", async (request, response) => {
+//   try {
+//     const result = await User.find({ is_hairstylist: true}).select("firstName lastName services");
+//     response.json(result);
+//   } catch (error) {
+//     response.status(500).json({ error: error.message});
+//   }
+// });
+
 // Create a new user
 // No authentication needed
 // POST /users
