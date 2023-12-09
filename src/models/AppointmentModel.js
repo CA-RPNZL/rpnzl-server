@@ -32,13 +32,47 @@ const AppointmentSchema = new Schema({
     },
     duration: {
       type: Number,
-      required: true,
+      required: false,
     },
   });
   
-  const Appointment = mongoose.model('Appointment', AppointmentSchema);
-  
-  // Export Apppointment model
-  module.exports = {
-    Appointment,
-  };
+  // Schema with String insrtead of ID
+  // const AppointmentSchema = new Schema({
+  //   client: {
+  //       // Using User model
+  //     type: 'String',
+  //     ref: 'User',
+  //     required: true,
+  //   },
+  //   date: {
+  //     type: Date,
+  //     required: true,
+  //   },
+  //   time: {
+  //     type: String,
+  //     required: true,
+  //   },
+  //   hairstylist: {
+  //       // Using User model
+  //     type: 'String',
+  //     ref: 'User',
+  //     required: true,
+  //   },
+  //   service: {
+  //       // Using Service model
+  //     type: 'String',
+  //     ref: 'Service',
+  //     required: true,
+  //   },
+  //   duration: {
+  //     type: Number,
+  //     required: false,
+  //   },
+  // });
+
+const Appointment = mongoose.model('Appointment', AppointmentSchema);
+
+// Export Appointment model
+module.exports = {
+  Appointment,
+};
