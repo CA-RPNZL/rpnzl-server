@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const { dbConnect } = require("./database");
 const { Service } = require("./models/ServiceModel");
 const { User } = require("./models/UserModel");
+const { Appointment } = require("./models/AppointmentModel");
 
 
 // Connect to the database
@@ -55,9 +56,9 @@ dbConnect().then(async ()=> {
         console.log("An error occurred when seeding the salon services:\n" + error)
     });
 
-
+    
     // Users
-
+    
     let newAdmin = new User({
         firstName: "George",
         lastName: "Sheridan",
@@ -66,7 +67,7 @@ dbConnect().then(async ()=> {
         password: "adminpassword",
         is_admin: true,
     });
-
+    
     let newHairstylist1 = new User({
         firstName: "Michelle",
         lastName: "Smith",
@@ -77,7 +78,7 @@ dbConnect().then(async ()=> {
         // Uses ID value of services e.g. [cutServiceId, consultationServiceId]
         services: [cut._id.toString(), consultation._id.toString()]
     });
-
+    
     let newHairstylist2 = new User({
         firstName: "Rachel",
         lastName: "Green",
@@ -88,7 +89,7 @@ dbConnect().then(async ()=> {
         // Uses ID value of services e.g. [cutServiceId, consultationServiceId]
         services: [cut._id.toString(), colour._id.toString(), cutAndColour._id.toString(), consultation._id.toString()],
     });
-
+    
     let newHairstylist3 = new User({
         firstName: "Angela",
         lastName: "Anaconda",
@@ -99,7 +100,7 @@ dbConnect().then(async ()=> {
         // Uses ID value of services e.g. [cutServiceId, consultationServiceId]
         services: [cut._id.toString(), perm._id.toString(), consultation._id.toString()]
     });
-
+    
     let newUser = new User({
         firstName: "Bianca",
         lastName: "Lopez",
@@ -107,10 +108,47 @@ dbConnect().then(async ()=> {
         email: "bianca@mail.com",
         password: "clientpassword",
     });
-
+    
     // Create and save users
     await User.create([newAdmin, newHairstylist1, newHairstylist2, newHairstylist3, newUser]).catch(error => {
         console.log("An error occurred when seeding the users:\n" + error)
     });
+    
+    // Appointments
+    
+    // let biancaUser = await User.findOne({ email: "bianca@mail.com" }).exec();
+    // let michelleHairstylist = await User.findOne({ email: "michelle@mail.com" }).exec();
+    // let cutService = await Service.findOne({ name: "Cut" }).exec();
+    // let consultationService = await Service.findOne({ name: "Consultation" }).exec();
+    
+    // Appointments
+
+    let appointmentConsultation = new Appointment({
+        client: newUser._id,
+        date: new Date("2023-12-05"),
+        time: "10:00 AM",
+        hairstylist: newHairstylist1._id,
+        service: consultation._id,
+        duration: consultation.duration,
+    });
+
+    // Appointment seeded as string 
+    // let appointmentConsultation = new Appointment({
+    //     client: `${newUser.firstName} ${newUser.lastName}`,
+    //     date: new Date("2023-12-05"),
+    //     time: "10:00 AM",
+    //     hairstylist: newHairstylist1.firstName,
+    //     service: consultation.name,
+    //     duration: consultation.duration,
+    // });
+
+
+    // Save the appointment
+    await appointmentConsultation.save().catch(error => {
+        console.log("An error occurred when seeding the appointments:\n" + error);
+    });
+
+    console.log("Seeded appointments successfully");
+
 })
 .catch((error) => console.log("An error occurred:\n" + error));
