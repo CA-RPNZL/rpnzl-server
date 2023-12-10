@@ -54,6 +54,10 @@ app.use("/", authController);
 const userController = require("./controllers/UserController");
 app.use("/users", userController);
 
+// Attach Appointment controller routes
+const appointmentController = require("./controllers/AppointmentController");
+app.use("/appointments", appointmentController);
+
 module.exports = {
     app
 }

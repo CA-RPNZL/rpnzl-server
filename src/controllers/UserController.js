@@ -31,7 +31,7 @@ router.get("/id/:id", validateJwt, authAsAdminOrUser, async (request, response) 
 // Create a new user
 // No authentication needed
 // POST /users
-router.post("/", validateJwt, authAsAdminOrUser, async (request, response) => {
+router.post("/", async (request, response) => {
   try {
     const newUser = await User.create(request.body);
     response.json(newUser);

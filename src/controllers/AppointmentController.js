@@ -1,36 +1,38 @@
 const express = require("express");
 const router = express.Router();
 const { Appointment } = require("../models/AppointmentModel");
+const { authAsAdminOrUser, authAsAdmin } = require("../functions/authorisation");
+const { validateJwt } = require("../functions/authentication");
 
 // Get all appointments
 // GET /appointments
-router.get("/", async (request, respond) => {
+router.get("/", validateJwt, authAsAdmin, async (request, response) => {
     try {
       const result = await Appointment.find({});
-      respond.json(result);
+      response.json(result);
     } catch (error) {
-      respond.status(500).json({ error: error.message });
+      response.status(500).json({ error: error.message });
     }
   });
   
 // Get appointment by ID
 // GET /appointments/id/:id
-router.get("/id/:id", async (request, respond) => {
+router.get("/id/:id", validateJwt, authAsAdminOrUser, async (request, response) => {
   try {
     const result = await Appointment.findById(request.params.id);
     if (!result) {
-      return respond.status(404).json({ message: "Appointment not found" });
+      return response.status(404).json({ message: "Appointment not found" });
     }
-      respond.json(result);
+      response.json(result);
     } catch (error) {
-      respond.status(500).json({ error: error.message });
+      response.status(500).json({ error: error.message });
     } 
 });
 
 // Update an existing appointment by ID
 // Need user or admin authentication
 // PATCH /appointments/id/:id
-router.patch("/id/:id", async (request, response) => {
+router.patch("/id/:id", validateJwt, authAsAdminOrUser,  async (request, response) => {
   // Show updated service
   let result = await Appointment.findByIdAndUpdate(request.params.id, request.body, { returnDocument: "after" }).catch(error => error);
 
@@ -42,7 +44,7 @@ router.patch("/id/:id", async (request, response) => {
 // Delete appointment by id
 // Need user or admin authentication
 // DELETE /appointments/id/:id
-router.delete("/id/:id", async (request, response) => {
+router.delete("/id/:id", validateJwt, authAsAdminOrUser, async (request, response) => {
   let result = await Appointment.findByIdAndDelete(request.params.id);
 
   response.json({
