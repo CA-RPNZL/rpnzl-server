@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Appointment } = require("../models/AppointmentModel");
-const { authAsAdminOrUser, authAsAdmin } = require("../functions/authorisation");
+const { authAsAdminOrUser, authAsAdmin, authAsHairstylist } = require("../functions/authorisation");
 const { validateJwt } = require("../functions/authentication");
 
 // Get all appointments
@@ -28,6 +28,34 @@ router.get("/id/:id", validateJwt, authAsAdminOrUser, async (request, response) 
       response.status(500).json({ error: error.message });
     } 
 });
+
+
+// Get appointments by hairstylist ID
+// Need Hairstylist authentication
+// GET /appointments/hairstylist/:hairstylistId
+router.get("/hairstylist/:hairstylistId", validateJwt, authAsHairstylist, async (request, response) => {
+  try {
+    const hairstylistId = request.params.hairstylistId;
+    const appointments = await Appointment.find({ hairstylist: hairstylistId });
+    
+    response.json(appointments);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
+// Create a new appointment
+// Need user or admin authentication
+// POST /appointments
+router.post("/", validateJwt, authAsAdminOrUser, async (request, response) => {
+  try {
+      let newAppointment = await Appointment.create(request.body);
+      response.status(201).json(newAppointment);
+  } catch (error) {
+      response.status(500).json({ error: error.message });
+  }
+});
+
 
 // Update an existing appointment by ID
 // Need user or admin authentication
