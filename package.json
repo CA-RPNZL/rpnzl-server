@@ -8,8 +8,8 @@
     "start": "NODE_ENV=production node src/index.js",
     "dev": "NODE_ENV=development nodemon src/index.js",
     "seed": "NODE_ENV=production node src/seed.js",
-    "seed-dev": "NODE_ENV=development node src/seed.js",
-    "wipe-dev": "NODE_ENV=development WIPE=true node src/wipe.js"
+    "dev-seed": "NODE_ENV=development nodemon src/seed.js",
+    "dev-wipe": "NODE_ENV=development WIPE=true node src/wipe.js"
   },
   "keywords": [],
   "author": "",
