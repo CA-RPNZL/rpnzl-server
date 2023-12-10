@@ -114,6 +114,7 @@ dbConnect().then(async ()=> {
     await User.create([newAdmin, newHairstylist1, newHairstylist2, newHairstylist3, newUser]).catch(error => {
         console.log("An error occurred when seeding the users:\n" + error)
     });
+
     console.log("Finished seeding users");
     
     // Appointments
@@ -150,7 +151,7 @@ dbConnect().then(async ()=> {
         console.log("An error occurred when seeding the appointments:\n" + error);
     });
 
-    console.log("Seeded appointments successfully");
+    console.log("Finished seeding appointments");
 
     
     
