@@ -32,6 +32,7 @@ router.get("/id/:id", async (request, response) => {
 });
 
 
+
 // Get appointments by hairstylist - show full details
 // Needs hairstylist authentication
 // GET /appointments/hairstylist/:hairstylistId
@@ -84,6 +85,7 @@ router.get("/user/:userId", async (request, response) => {
 
 // Create a new appointment
 // Need client, hairstylist or admin authentication
+// Create a new appointment
 // POST /appointments
 router.post("/", async (request, response) => {
   try {

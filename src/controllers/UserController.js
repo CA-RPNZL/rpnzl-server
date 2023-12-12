@@ -28,6 +28,7 @@ router.get("/id/:id", async (request, response) => {
   }
 });
 
+
 // Show users that are hairstylists
 // Only show the first name, last name and service
 // Doesn't need authentication

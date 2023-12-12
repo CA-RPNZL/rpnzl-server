@@ -20,11 +20,15 @@ async function dbConnect() {
 
     try {
         await mongoose.connect(dbUri);
+
         console.log("Database connected.");
+      
+        // console.log("Database connected to " + dbUri);
     } catch (error) {
         console.log(`Database failed to connect. Error:\n${JSON.stringify(error)}`);
     }
 };
+
 
 
 
