@@ -132,6 +132,24 @@ dbConnect().then(async ()=> {
         duration: consultation.duration,
     });
 
+    let appointmentConsultation2 = new Appointment({
+        client: newUser._id,
+        date: new Date("2023-12-10"),
+        time: "11:00 AM",
+        hairstylist: newHairstylist2._id,
+        service: consultation._id,
+        duration: consultation.duration,
+    });
+
+    let appointmentCutAndColour = new Appointment({
+        client: newUser._id,
+        date: new Date("2023-12-11"),
+        time: "2:00 PM",
+        hairstylist: newHairstylist1._id,
+        service: cutAndColour._id,
+        duration: cutAndColour.duration,
+    });
+
     // Appointment seeded as string 
     // let appointmentConsultation = new Appointment({
     //     client: `${newUser.firstName} ${newUser.lastName}`,
@@ -143,9 +161,9 @@ dbConnect().then(async ()=> {
     // });
 
 
-    // Save the appointment
-    await appointmentConsultation.save().catch(error => {
-        console.log("An error occurred when seeding the appointments:\n" + error);
+    // Create and save the appointment
+    await Appointment.create([appointmentConsultation, appointmentConsultation2, appointmentCutAndColour]).catch(error => {
+        console.log("An error occurred when seeding the appointments:\n" + error)
     });
 
     console.log("Seeded appointments successfully");

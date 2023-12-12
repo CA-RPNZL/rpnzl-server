@@ -44,6 +44,20 @@ router.get("/hairstylist/:hairstylistId", async (request, response) => {
   }
 });
 
+// Get appointments by user ID
+// Need User authentication
+// GET /appointments/user/:huserId
+router.get("/user/:userId", async (request, response) => {
+  try {
+    const userId = request.params.userId;
+    const appointments = await Appointment.find({ client: userId });
+    
+    response.json(appointments);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
 // Create a new appointment
 // Need user or admin authentication
 // POST /appointments
