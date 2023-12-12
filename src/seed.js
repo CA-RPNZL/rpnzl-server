@@ -56,7 +56,8 @@ dbConnect().then(async ()=> {
         console.log("An error occurred when seeding the salon services:\n" + error)
     });
 
-    
+    console.log("Finished seeding services");
+
     // Users
     
     let newAdmin = new User({
@@ -113,6 +114,8 @@ dbConnect().then(async ()=> {
     await User.create([newAdmin, newHairstylist1, newHairstylist2, newHairstylist3, newUser]).catch(error => {
         console.log("An error occurred when seeding the users:\n" + error)
     });
+
+    console.log("Finished seeding users");
     
     // Appointments
     
@@ -125,8 +128,8 @@ dbConnect().then(async ()=> {
 
     let appointmentConsultation = new Appointment({
         client: newUser._id,
-        date: new Date("2023-12-05"),
-        time: "10:00 AM",
+        startDateTime: new Date("2023-12-15 14:00"),
+        endDateTime: new Date("2023-12-15 14:15"),
         hairstylist: newHairstylist1._id,
         service: consultation._id,
         duration: consultation.duration,
@@ -166,7 +169,9 @@ dbConnect().then(async ()=> {
         console.log("An error occurred when seeding the appointments:\n" + error)
     });
 
-    console.log("Seeded appointments successfully");
+    console.log("Finished seeding appointments");
 
+    
+    
 })
 .catch((error) => console.log("An error occurred:\n" + error));
