@@ -10,12 +10,12 @@ const AppointmentSchema = new Schema({
       ref: 'User',
       required: true,
     },
-    date: {
+    startDateTime: {
       type: Date,
       required: true,
     },
-    time: {
-      type: String,
+    endDateTime: {
+      type: Date,
       required: true,
     },
     hairstylist: {

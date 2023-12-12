@@ -9,7 +9,7 @@ const { User } = require("../models/UserModel");
 // GET /users
 router.get("/", async (request, response) => {
   try {
-    const result = await User.find({});
+    const result = await User.find({}).select("-password");
     response.json(result);
   } catch (error) {
     response.status(500).json({ error: error.message });
@@ -27,6 +27,32 @@ router.get("/id/:id", async (request, response) => {
     response.status(500).json({ error: error.message });
   }
 });
+
+// Show users that are hairstylists
+// Only show the first name, last name and service
+// Doesn't need authentication
+// GET /users/hairstylists?service=:id
+router.get("/hairstylists", async (request, response) => {
+  try {
+    // Grab the selected service from the query
+    const selectedServiceId = request.query.service;
+
+    // If a service is selected
+    if (selectedServiceId) {
+      // Show hairstylists filtered by selected service
+      query = { is_hairstylist: true, services: selectedServiceId };
+    } else {
+      // No service selected - show all hairstylists
+      query = { is_hairstylist: true }
+    }
+
+    const result = await User.find(query).select("firstName lastName services");
+    response.json(result);
+  } catch (error) {
+    response.status(500).json({ error: error.message});
+  }
+});
+
 
 // Create a new user
 // No authentication needed

@@ -5,6 +5,7 @@ const { Appointment } = require("../models/AppointmentModel");
 // const { validateJwt } = require("../functions/authentication");
 
 // Get all appointments
+// Need admin authentication
 // GET /appointments
 router.get("/", async (request, response) => {
     try {
@@ -16,6 +17,7 @@ router.get("/", async (request, response) => {
   });
   
 // Get appointment by ID
+// Need client, hairstylist or admin authentication
 // GET /appointments/id/:id
 router.get("/id/:id", async (request, response) => {
   try {
@@ -30,8 +32,8 @@ router.get("/id/:id", async (request, response) => {
 });
 
 
-// Get appointments by hairstylist ID
-// Need Hairstylist authentication
+// Get appointments by hairstylist - show full details
+// Needs hairstylist authentication
 // GET /appointments/hairstylist/:hairstylistId
 router.get("/hairstylist/:hairstylistId", async (request, response) => {
   try {
@@ -44,8 +46,44 @@ router.get("/hairstylist/:hairstylistId", async (request, response) => {
   }
 });
 
+
+// Get appointments by hairstylist - only show appointment ID, start date/time, end date/time
+// Doesn't need authentication - used for booking availability
+// GET /appointments?hairstylist=:hairstylistId
+router.get("/hairstylist", async (request, response) => {
+  try {
+    // Grab the selected service from the query
+    const selectedHairstylistId = request.query.hairstylist;
+
+    // If a service is selected
+    if (selectedHairstylistId) {
+      // Show hairstylists filtered by selected service
+      query = { hairstylist: selectedHairstylistId };
+    }
+    
+    const appointments = await Appointment.find(query).select("startDateTime endDateTime");
+    response.json(appointments);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
+// Get appointments by user ID
+// Need User authentication
+// GET /appointments/user/:huserId
+router.get("/user/:userId", async (request, response) => {
+  try {
+    const userId = request.params.userId;
+    const appointments = await Appointment.find({ client: userId });
+    
+    response.json(appointments);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
 // Create a new appointment
-// Need user or admin authentication
+// Need client, hairstylist or admin authentication
 // POST /appointments
 router.post("/", async (request, response) => {
   try {
@@ -58,7 +96,7 @@ router.post("/", async (request, response) => {
 
 
 // Update an existing appointment by ID
-// Need user or admin authentication
+// Need client, hairstylist or admin authentication
 // PATCH /appointments/id/:id
 router.patch("/id/:id", async (request, response) => {
   // Show updated service
@@ -70,7 +108,7 @@ router.patch("/id/:id", async (request, response) => {
 });
 
 // Delete appointment by id
-// Need user or admin authentication
+// Need client, hairstylist or admin authentication
 // DELETE /appointments/id/:id
 router.delete("/id/:id", async (request, response) => {
   let result = await Appointment.findByIdAndDelete(request.params.id);
