@@ -128,8 +128,8 @@ dbConnect().then(async ()=> {
 
     let appointmentConsultation = new Appointment({
         client: newUser._id,
-        date: new Date("2023-12-05"),
-        time: "10:00 AM",
+        startDateTime: new Date("2023-12-15 14:00"),
+        endDateTime: new Date("2023-12-15 14:15"),
         hairstylist: newHairstylist1._id,
         service: consultation._id,
         duration: consultation.duration,
