@@ -1,21 +1,41 @@
 const express = require("express");
 const router = express.Router();
 const { Appointment } = require("../models/AppointmentModel");
+const { Service } = require("../models/ServiceModel"); 
+
 // const { authAsAdminOrUser, authAsAdmin, authAsHairstylist } = require("../functions/authorisation");
 // const { validateJwt } = require("../functions/authentication");
 
 // Get all appointments
 // Need admin authentication
 // GET /appointments
-router.get("/", async (request, response) => {
+// router.get("/", async (request, response) => {
+//     try {
+//       const result = await Appointment.find({});
+//       response.json(result);
+//     } catch (error) {
+//       response.status(500).json({ error: error.message });
+//     }
+//   });
+
+  // GET Request with populated fields
+  router.get("/", async (request, response) => {
     try {
-      const result = await Appointment.find({});
+      // Ensure that the "Service" model is registered before using it
+      await Service.find(); // This is a simple check to ensure the model is registered
+  
+      // Now you can use populate with the "Service" model
+      const result = await Appointment.find({})
+        .populate('client', 'firstName lastName') // Populate client with firstName and lastName fields
+        .populate('hairstylist', 'firstName') // Populate hairstylist with firstName field
+        .populate('service', 'name'); // Populate service with name field
+  
       response.json(result);
     } catch (error) {
       response.status(500).json({ error: error.message });
     }
   });
-  
+
 // Get appointment by ID
 // Need client, hairstylist or admin authentication
 // GET /appointments/id/:id
