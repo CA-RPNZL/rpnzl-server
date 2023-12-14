@@ -21,10 +21,12 @@ app.use(helmet.contentSecurityPolicy({
 const cors = require("cors");
 // Allowed origin array
 var corsOptions = {
-    origin: [
-        "http://localhost:3000",
-        "https://ca-rpnzl-15265a6e99eb.herokuapp.com/"
-    ],
+    // origin: 
+    // [
+    //     "http://localhost:3000",
+    //     "https://ca-rpnzl-15265a6e99eb.herokuapp.com/"
+    // ],
+    origin: true,
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));

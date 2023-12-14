@@ -47,7 +47,10 @@ router.post("/login", async (request, response) => {
         
         // Respond with JWT
         response.json({
-            jwt: userJwt
+            jwt: userJwt,
+            userId: user._id.toString(),
+            isAdmin: isAdmin,
+            isHairstylist: isHairstylist
         });
 
     } catch (error) {

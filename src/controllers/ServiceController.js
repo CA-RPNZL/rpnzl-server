@@ -83,7 +83,7 @@ router.delete("/id/:id", async (request, response) => {
             deletedService: result
         });
     } catch (error) {
-        res;ponse.status(500).json({
+        response.status(500).json({
             error: error
         })
     }
