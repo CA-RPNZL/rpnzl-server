@@ -53,13 +53,38 @@ router.get("/id/:id", async (request, response) => {
 
 
 
-// Get appointments by hairstylist - show full details
+// Get appointments by hairstylist=userId
 // Needs hairstylist authentication
-// GET /appointments/hairstylist/:hairstylistId
+// GET /appointments/hairstylist/:hairstylistId?pastAppt=:true/false
 router.get("/hairstylist/:hairstylistId", async (request, response) => {
   try {
+    // Check whether past appointments should be included
+    const pastAppt = request.query.pastAppt;
+
+    // Grab the user id from parameters
     const hairstylistId = request.params.hairstylistId;
-    const appointments = await Appointment.find({ hairstylist: hairstylistId });
+
+    // Get current date
+    const currentDate = new Date();
+
+    let appointments;
+
+    if (pastAppt === "false") {
+      // Do not grab appointments that have passed
+      appointments = await Appointment.find({ hairstylist: hairstylistId })
+      .populate("service", "name")
+      .populate("hairstylist", "firstName lastName")
+      .populate("client", "firstName lastName mobileNumber")
+      .sort({ startDateTime: "asc"})
+      .where("startDateTime").gte(currentDate);
+    } else {
+      // Grab all appointments
+      appointments = await Appointment.find({ hairstylist: hairstylistId })
+      .populate("service", "name")
+      .populate("hairstylist", "firstName lastName")
+      .populate("client", "firstName lastName mobileNumber")
+      .sort({ startDateTime: "asc"});
+    }
     
     response.json(appointments);
   } catch (error) {
@@ -89,13 +114,36 @@ router.get("/hairstylist", async (request, response) => {
   }
 });
 
-// Get appointments by user ID
-// Need User authentication
-// GET /appointments/user/:huserId
+// Get appointments by client=userId
+// Need user authentication
+// GET /appointments/user/:userId?pastAppt=:true/false
 router.get("/user/:userId", async (request, response) => {
   try {
+    // Check whether past appointments should be included
+    const pastAppt = request.query.pastAppt;
+
+    // Grab the user id from parameters
     const userId = request.params.userId;
-    const appointments = await Appointment.find({ client: userId });
+
+    // Get current date
+    const currentDate = new Date();
+
+    let appointments;
+
+    if (pastAppt === "false") {
+      // Do not grab appointments that have passed
+      appointments = await Appointment.find({ client: userId })
+      .populate("service", "name")
+      .populate("hairstylist", "firstName lastName")
+      .sort({ startDateTime: "asc"})
+      .where("startDateTime").gte(currentDate);
+    } else {
+      // Grab all appointments
+      appointments = await Appointment.find({ client: userId })
+      .populate("service", "name")
+      .populate("hairstylist", "firstName lastName")
+      .sort({ startDateTime: "asc"});
+    }
     
     response.json(appointments);
   } catch (error) {
