@@ -9,6 +9,7 @@ const router = express.Router();
 
 const { User } = require("../models/UserModel");
 const { comparePassword, generateJwt } = require("../functions/authentication");
+const bcrypt = require("bcryptjs/dist/bcrypt");
 
 
 // POST /login
@@ -62,5 +63,34 @@ router.post("/login", async (request, response) => {
 
 });
 
+//PATCH /changepassword/:userId
+router.patch("/changepassword/:userId", async (request, response) => {
+    try {
+        const { oldPassword, newPassword } = request.body;
+        // if either or both null, return with error
+        if (!(oldPassword && newPassword)) {
+            return response.status(400).json({message: "Invalid request"})
+        }
 
+        const user = await User.findById(request.params.userId);
+        console.log("user is: ");
+        console.log(user);
+        if (!user) {
+            return response.status(404).json({ message: "User not found" });
+        }
+
+        const correctPassword = await comparePassword(oldPassword, user.password);
+        if (!correctPassword) {
+            return response.status(401).json({message: "Invalid current password"})
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        return response.status(200).json({message: "Successfully changed password"})
+
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+});
 module.exports = router;
