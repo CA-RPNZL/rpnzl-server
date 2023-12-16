@@ -17,7 +17,7 @@ router.get("/", async (request, response) => {
 });
 
 // Show user by user id
-// Need User authentication, or User authentication if own id
+// Need user authentication, or user authentication if own id
 // GET /users/id/:id
 router.get("/id/:id", async (request, response) => {
   try {
