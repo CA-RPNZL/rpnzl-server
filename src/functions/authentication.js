@@ -22,7 +22,7 @@ async function comparePassword(reqPassword, userPassword) {
 // Generate JWT
 function generateJwt(userId, isAdmin, isHairstylist) {
     // jwt.sign(payload, secretOrPrivateKey, options)
-    return newJwt = jwt.sign(
+    return authtoken = jwt.sign(
         { 
             user_id: userId,
             is_admin: isAdmin,
@@ -38,7 +38,7 @@ function generateJwt(userId, isAdmin, isHairstylist) {
 function validateJwt(request, response, next) {
     try {
         // Grab the JWT from the header
-        let suppliedToken = request.headers.jwt;
+        let suppliedToken = request.headers.authtoken;
     
         // Handle if no token found
         if (!suppliedToken) {
@@ -55,9 +55,13 @@ function validateJwt(request, response, next) {
         request.user = decodedToken;
     
         // Continue to next middleware
+        console.log("User has been validated.");
         next();
     } catch (error) {
         // Handle error if issue with token
+        console.log("suppliedToken is: " + suppliedToken);
+        console.log("decodedToken is: " + decodedToken);
+        console.log("User has not been validated.");
         return response.status(401).json({
             error: "Unauthorised - invalid token."
         });

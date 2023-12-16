@@ -7,13 +7,16 @@ const router = express.Router();
 // Import Mongoose
 const mongoose = require("mongoose");
 
+// Import Service model
 const { Service } = require("../models/ServiceModel");
-// const { validateJwt } = require("../functions/authentication");
+
+// Import middleware
+const { validateJwt } = require("../functions/authentication");
 // const { authAsAdmin } = require("../functions/authorisation");
 
 
 // Show all services
-// Doesn't need authentication
+// Doesn't need auth
 // GET /services
 router.get("/", async (request, response) => {
     try {
@@ -26,8 +29,9 @@ router.get("/", async (request, response) => {
     };
 });
 
+
 // Show service by service id
-// Doesn't need authentication
+// Doesn't need auth
 // GET /services/id/:id
 router.get("/id/:id", async (request, response) => {
     try {
@@ -40,10 +44,11 @@ router.get("/id/:id", async (request, response) => {
     };
 });
 
+
 // Create a new service
-// Need admin authentication
+// Need admin auth
 // POST /services
-router.post("/", async (request, response) => {
+router.post("/", validateJwt, async (request, response) => {
     try {
         let newService = await Service.create(request.body);
         response.json(newService);
@@ -54,10 +59,11 @@ router.post("/", async (request, response) => {
     };
 });
 
+
 // Update an existing service by id
-// Need admin authentication
-// PATCH /services/id:id
-router.patch("/id/:id", async (request, response) => {
+// Need admin auth
+// PATCH /services/id/:id
+router.patch("/id/:id", validateJwt, async (request, response) => {
     try {
         // Show updated service
         let result = await Service.findByIdAndUpdate(request.params.id, request.body, { returnDocument: "after" });
@@ -72,10 +78,11 @@ router.patch("/id/:id", async (request, response) => {
     };
 });
 
+
 // Delete a service by id
-// Need admin authentication
+// Need admin auth
 // DELETE /services/id/:id
-router.delete("/id/:id", async (request, response) => {
+router.delete("/id/:id", validateJwt, async (request, response) => {
     try {
         let result = await Service.findByIdAndDelete(request.params.id);
     
