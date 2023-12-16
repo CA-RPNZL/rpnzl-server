@@ -7,9 +7,11 @@ const mongoose = require("mongoose");
 // Create an instance of an Express Router
 const router = express.Router();
 
+// Import bcrypt
+const bcrypt = require("bcryptjs/dist/bcrypt");
+
 const { User } = require("../models/UserModel");
 const { comparePassword, generateJwt } = require("../functions/authentication");
-const bcrypt = require("bcryptjs/dist/bcrypt");
 
 
 // POST /login
@@ -63,8 +65,11 @@ router.post("/login", async (request, response) => {
 
 });
 
-//PATCH /changepassword/:userId
-router.patch("/changepassword/:userId", async (request, response) => {
+
+// Change password
+// Need user auth for own id
+// PATCH /changepassword/:userId
+router.patch("/changepassword/:userId", validateJwt, async (request, response) => {
     try {
         const { oldPassword, newPassword } = request.body;
         // if either or both null, return with error
@@ -93,4 +98,6 @@ router.patch("/changepassword/:userId", async (request, response) => {
       response.status(500).json({ error: error.message });
     }
 });
+
+
 module.exports = router;
