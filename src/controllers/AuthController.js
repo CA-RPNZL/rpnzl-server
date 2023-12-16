@@ -15,6 +15,7 @@ const { User } = require("../models/UserModel");
 
 // Import middleware
 const { comparePassword, generateJwt, validateJwt } = require("../functions/authentication");
+const { authAsAdminOrUser } = require("../functions/authorisation");
 
 
 // POST /login
@@ -72,7 +73,7 @@ router.post("/login", async (request, response) => {
 // Change password
 // Need user auth for own id
 // PATCH /changepassword/:userId
-router.patch("/changepassword/:userId", validateJwt, async (request, response) => {
+router.patch("/changepassword/:userId", validateJwt, authAsAdminOrUser, async (request, response) => {
     try {
         const { oldPassword, newPassword } = request.body;
         // if either or both null, return with error
