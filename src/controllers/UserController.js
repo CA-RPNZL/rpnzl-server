@@ -15,7 +15,7 @@ const { authAsAdminOrUser, authAsAdmin } = require("../functions/authorisation")
 // Show all users
 // Need admin auth
 // GET /users
-router.get("/", validateJwt, async (request, response) => {
+router.get("/", validateJwt, authAsAdmin, async (request, response) => {
   try {
     const result = await User.find({}).select("-password");
     response.json(result);
