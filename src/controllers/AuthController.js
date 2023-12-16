@@ -10,8 +10,11 @@ const router = express.Router();
 // Import bcrypt
 const bcrypt = require("bcryptjs/dist/bcrypt");
 
+// Import User model
 const { User } = require("../models/UserModel");
-const { comparePassword, generateJwt } = require("../functions/authentication");
+
+// Import middleware
+const { comparePassword, generateJwt, validateJwt } = require("../functions/authentication");
 
 
 // POST /login
