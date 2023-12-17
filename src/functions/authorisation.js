@@ -3,12 +3,11 @@ function authAsAdmin(request, response, next) {
     // Check if the user is admin
     if (request.user.is_admin) {
         // If user is admin, continue to next middleware
-        console.log("Authorised as admin");
         next();
     } else {
         // Handle error if user is not admin
         return response.status(403).json({
-            error: "You do not have authorisation to proceed."
+            error: "You do not have authorisation to proceed. You must be an administrator."
         });
     };
 };

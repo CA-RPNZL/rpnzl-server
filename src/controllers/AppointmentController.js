@@ -40,9 +40,9 @@ router.get("/", validateJwt, async (request, response) => {
 // Get appointment by ID
 // Need client, hairstylist or admin auth
 // GET /appointments/id/:id
-router.get("/id/:id", validateJwt, async (request, response) => {
+router.get("/id/:apptId", validateJwt, async (request, response) => {
   try {
-    const result = await Appointment.findById(request.params.id);
+    const result = await Appointment.findById(request.params.apptId)
     if (!result) {
       return response.status(404).json({ message: "Appointment not found" });
     }
@@ -95,11 +95,11 @@ router.get("/hairstylist/:hairstylistId", validateJwt, async (request, response)
 
 // Get appointments by hairstylist - only show appointment ID and start/end date/time
 // Doesn't need auth - used for booking availability
-// GET /appointments?hairstylist=:hairstylistId
-router.get("/hairstylist", async (request, response) => {
+// GET /appointments/hairstylistdate/:hairstylistId
+router.get("/hairstylistdate/:hairstylistId", async (request, response) => {
   try {
-    // Grab the selected service from the query
-    const selectedHairstylistId = request.query.hairstylist;
+    // Grab the user id from parameters
+    const selectedHairstylistId = request.params.hairstylistId;
 
     // If a service is selected
     if (selectedHairstylistId) {

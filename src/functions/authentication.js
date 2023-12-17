@@ -55,7 +55,7 @@ function validateJwt(request, response, next) {
         request.user = decodedToken;
     
         // Continue to next middleware
-        console.log("User has been validated.");
+        // console.log("User has been validated.");
         next();
     } catch (error) {
         // Handle error if issue with token
