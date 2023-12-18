@@ -27,8 +27,8 @@ router.get("/", validateJwt, authAsAdmin, async (request, response) => {
     // Now you can use populate with the "Service" model
     const result = await Appointment.find({})
     .populate('client', 'firstName lastName') // Populate client with firstName and lastName fields
-    .populate('hairstylist', 'firstName') // Populate hairstylist with firstName field
-    .populate('service', 'name'); // Populate service with name field
+    .populate('hairstylist', 'firstName lastName services') // Populate hairstylist with firstName field
+    .populate('service', 'name duration'); // Populate service with name field
     
     response.json(result);
   } catch (error) {
