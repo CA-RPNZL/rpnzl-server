@@ -15,6 +15,7 @@ const { User } = require("../models/UserModel");
 
 // Import middleware
 const { comparePassword, generateJwt, validateJwt } = require("../functions/authentication");
+const { authAsUser } = require("../functions/authorisation");
 
 
 // POST /login
@@ -71,8 +72,8 @@ router.post("/login", async (request, response) => {
 
 // Change password
 // Need user auth for own id
-// PATCH /changepassword/:userId
-router.patch("/changepassword/:userId", validateJwt, async (request, response) => {
+// PATCH /changepassword/:id
+router.patch("/changepassword/:id", validateJwt, authAsUser, async (request, response) => {
     try {
         const { oldPassword, newPassword } = request.body;
         // if either or both null, return with error
@@ -80,7 +81,7 @@ router.patch("/changepassword/:userId", validateJwt, async (request, response) =
             return response.status(400).json({message: "Invalid request"})
         }
 
-        const user = await User.findById(request.params.userId);
+        const user = await User.findById(request.params.id);
         console.log("user is: ");
         console.log(user);
         if (!user) {
