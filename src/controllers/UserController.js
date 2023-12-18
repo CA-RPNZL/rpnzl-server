@@ -7,6 +7,10 @@ const router = express.Router();
 // Import User model
 const { User } = require("../models/UserModel");
 
+// Import Appointment model
+const { Appointment } = require("../models/AppointmentModel");
+
+
 // Import middleware
 const { validateJwt } = require("../functions/authentication");
 // const { authAsAdminOrUser, authAsAdmin } = require("../functions/authorisation");
@@ -97,10 +101,22 @@ router.patch("/id/:id", validateJwt, async (request, response) => {
 // Delete a user by id
 // Need admin auth or user auth if own id
 // DELETE /users/id/:id
+
+
 router.delete("/id/:id", validateJwt, async (request, response) => {
   try {
-    const result = await User.findByIdAndDelete(request.params.id);
-    response.json({ deletedUser: result });
+    const userId = request.params.id;
+
+    // Delete future appointments with the hairstylist
+    await Appointment.deleteMany({
+      client: userId,
+      startDateTime: { $gte: new Date() }
+    });
+
+    // Delete the user account
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    response.json({ deletedUser, message: 'User account and future appointments deleted successfully.' });
   } catch (error) {
     response.status(500).json({ error: error.message });
   }
