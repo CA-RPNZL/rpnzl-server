@@ -43,6 +43,7 @@ router.get("/", validateJwt, async (request, response) => {
 router.get("/id/:apptId", validateJwt, async (request, response) => {
   try {
     const result = await Appointment.findById(request.params.apptId)
+    .populate("client", "firstName lastName")
     .populate("service", "name duration")
     .populate("hairstylist", "firstName lastName services");
     if (!result) {

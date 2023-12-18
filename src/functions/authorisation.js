@@ -51,7 +51,7 @@ function authAsAdminOrUser(request, response, next) {
     const targetUser = request.params.id;
     // Check  if the logged in user is the user
     if (request.user.is_admin || loggedInUser === targetUser) {
-        console.log("Authorised as admin, or logged in user");
+        // console.log("Authorised as admin, or logged in user");
         next();
     } else {
         // Handle error if logged in user is not the user
