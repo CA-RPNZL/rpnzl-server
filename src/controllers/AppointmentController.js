@@ -12,14 +12,14 @@ const { Service } = require("../models/ServiceModel");
 
 // Import middleware
 const { validateJwt } = require("../functions/authentication");
-// const { authAsAdminOrUser, authAsAdmin, authAsHairstylist } = require("../functions/authorisation");
+const { authAsAdminOrUser, authAsAdmin, authAsHairstylist } = require("../functions/authorisation");
 
 
 // Show all appointments
 // Request with populated client, hairstylist, service fields
 // Need admin auth
 // GET /appointments
-router.get("/", validateJwt, async (request, response) => {
+router.get("/", validateJwt, authAsAdmin, async (request, response) => {
   try {
     // Ensure that the "Service" model is registered before using it
     await Service.find(); // This is a simple check to ensure the model is registered
