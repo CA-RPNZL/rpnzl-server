@@ -21,7 +21,8 @@ const { authAsAdminOrUser, authAsAdmin } = require("../functions/authorisation")
 // GET /users
 router.get("/", validateJwt, authAsAdmin, async (request, response) => {
   try {
-    const result = await User.find({}).select("-password");
+    const result = await User.find({}).select("-password")
+    .populate("services", "name duration");
     response.json(result);
   } catch (error) {
     response.status(500).json({ error: error.message });
