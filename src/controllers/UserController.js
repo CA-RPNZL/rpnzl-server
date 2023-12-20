@@ -104,8 +104,20 @@ router.patch("/id/:id", validateJwt, authAsAdminOrUser, async (request, response
 router.delete("/id/:id", validateJwt, authAsAdminOrUser, async (request, response) => {
   try {
     const userId = request.params.id;
+    const user = await User.findById(userId);
 
-    // Delete future appointments with the hairstylist
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Delete future appointments where user is a hairstylist
+    if (user.is_hairstylist) {
+      await Appointment.deleteMany({
+        hairstylist: userId,
+        startDateTime: { $gte: new Date() }
+      })
+    }
+    // Delete future appointments where user is the client
     await Appointment.deleteMany({
       client: userId,
       startDateTime: { $gte: new Date() }
@@ -117,6 +129,7 @@ router.delete("/id/:id", validateJwt, authAsAdminOrUser, async (request, respons
     response.json({ deletedUser, message: 'User account and future appointments deleted successfully.' });
   } catch (error) {
     response.status(500).json({ error: error.message });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
