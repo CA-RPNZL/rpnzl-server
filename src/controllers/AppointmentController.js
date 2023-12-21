@@ -12,7 +12,7 @@ const { Service } = require("../models/ServiceModel");
 
 // Import middleware
 const { validateJwt } = require("../functions/authentication");
-const { authAsAdminOrUser, authAsAdmin, authAsHairstylist } = require("../functions/authorisation");
+const { authAsAdmin } = require("../functions/authorisation");
 
 
 // Show all appointments
