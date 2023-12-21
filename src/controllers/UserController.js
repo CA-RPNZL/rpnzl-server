@@ -7,17 +7,22 @@ const router = express.Router();
 // Import User model
 const { User } = require("../models/UserModel");
 
+// Import Appointment model
+const { Appointment } = require("../models/AppointmentModel");
+
+
 // Import middleware
 const { validateJwt } = require("../functions/authentication");
-// const { authAsAdminOrUser, authAsAdmin } = require("../functions/authorisation");
+const { authAsAdminOrUser, authAsAdmin } = require("../functions/authorisation");
 
 
 // Show all users
 // Need admin auth
 // GET /users
-router.get("/", validateJwt, async (request, response) => {
+router.get("/", validateJwt, authAsAdmin, async (request, response) => {
   try {
-    const result = await User.find({}).select("-password");
+    const result = await User.find({}).select("-password")
+    .populate("services", "name duration");
     response.json(result);
   } catch (error) {
     response.status(500).json({ error: error.message });
@@ -28,7 +33,7 @@ router.get("/", validateJwt, async (request, response) => {
 // Show user by user id
 // Need admin auth or user auth if own id
 // GET /users/id/:id
-router.get("/id/:id", validateJwt, async (request, response) => {
+router.get("/id/:id", validateJwt, authAsAdminOrUser, async (request, response) => {
   try {
     const result = await User.findById(request.params.id);
     response.json(result);
@@ -40,7 +45,7 @@ router.get("/id/:id", validateJwt, async (request, response) => {
 
 // Show users that are hairstylists
 // Only show the first name, last name and service
-// Doesn't need auth
+// No auth needed
 // GET /users/hairstylists?service=:id
 router.get("/hairstylists", async (request, response) => {
   try {
@@ -80,7 +85,7 @@ router.post("/", async (request, response) => {
 // Update an existing user by id
 // Need admin auth, or user auth if own id
 // PATCH /users/id:id
-router.patch("/id/:id", validateJwt, async (request, response) => {
+router.patch("/id/:id", validateJwt, authAsAdminOrUser, async (request, response) => {
   try {
     const result = await User.findByIdAndUpdate(
       request.params.id,
@@ -97,12 +102,35 @@ router.patch("/id/:id", validateJwt, async (request, response) => {
 // Delete a user by id
 // Need admin auth or user auth if own id
 // DELETE /users/id/:id
-router.delete("/id/:id", validateJwt, async (request, response) => {
+router.delete("/id/:id", validateJwt, authAsAdminOrUser, async (request, response) => {
   try {
-    const result = await User.findByIdAndDelete(request.params.id);
-    response.json({ deletedUser: result });
+    const userId = request.params.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Delete future appointments where user is a hairstylist
+    if (user.is_hairstylist) {
+      await Appointment.deleteMany({
+        hairstylist: userId,
+        startDateTime: { $gte: new Date() }
+      })
+    }
+    // Delete future appointments where user is the client
+    await Appointment.deleteMany({
+      client: userId,
+      startDateTime: { $gte: new Date() }
+    });
+
+    // Delete the user account
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    response.json({ deletedUser, message: 'User account and future appointments deleted successfully.' });
   } catch (error) {
     response.status(500).json({ error: error.message });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

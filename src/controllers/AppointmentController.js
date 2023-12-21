@@ -12,14 +12,14 @@ const { Service } = require("../models/ServiceModel");
 
 // Import middleware
 const { validateJwt } = require("../functions/authentication");
-// const { authAsAdminOrUser, authAsAdmin, authAsHairstylist } = require("../functions/authorisation");
+const { authAsAdmin } = require("../functions/authorisation");
 
 
 // Show all appointments
 // Request with populated client, hairstylist, service fields
 // Need admin auth
 // GET /appointments
-router.get("/", validateJwt, async (request, response) => {
+router.get("/", validateJwt, authAsAdmin, async (request, response) => {
   try {
     // Ensure that the "Service" model is registered before using it
     await Service.find(); // This is a simple check to ensure the model is registered
@@ -27,8 +27,8 @@ router.get("/", validateJwt, async (request, response) => {
     // Now you can use populate with the "Service" model
     const result = await Appointment.find({})
     .populate('client', 'firstName lastName') // Populate client with firstName and lastName fields
-    .populate('hairstylist', 'firstName') // Populate hairstylist with firstName field
-    .populate('service', 'name'); // Populate service with name field
+    .populate('hairstylist', 'firstName lastName services') // Populate hairstylist with firstName field
+    .populate('service', 'name duration'); // Populate service with name field
     
     response.json(result);
   } catch (error) {
@@ -40,9 +40,12 @@ router.get("/", validateJwt, async (request, response) => {
 // Get appointment by ID
 // Need client, hairstylist or admin auth
 // GET /appointments/id/:id
-router.get("/id/:id", validateJwt, async (request, response) => {
+router.get("/id/:apptId", validateJwt, async (request, response) => {
   try {
-    const result = await Appointment.findById(request.params.id);
+    const result = await Appointment.findById(request.params.apptId)
+    .populate("client", "firstName lastName")
+    .populate("service", "name duration")
+    .populate("hairstylist", "firstName lastName services");
     if (!result) {
       return response.status(404).json({ message: "Appointment not found" });
     }
@@ -95,11 +98,11 @@ router.get("/hairstylist/:hairstylistId", validateJwt, async (request, response)
 
 // Get appointments by hairstylist - only show appointment ID and start/end date/time
 // Doesn't need auth - used for booking availability
-// GET /appointments?hairstylist=:hairstylistId
-router.get("/hairstylist", async (request, response) => {
+// GET /appointments/hairstylistdate/:hairstylistId
+router.get("/hairstylistdate/:hairstylistId", async (request, response) => {
   try {
-    // Grab the selected service from the query
-    const selectedHairstylistId = request.query.hairstylist;
+    // Grab the user id from parameters
+    const selectedHairstylistId = request.params.hairstylistId;
 
     // If a service is selected
     if (selectedHairstylistId) {
