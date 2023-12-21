@@ -30,8 +30,16 @@ async function dbConnect() {
 };
 
 
+// Disconnect from database
+async function dbDisconnect() {
+    await mongoose.connection.close();
+
+    console.log("Database disconnected.");
+}
+
 
 
 module.exports = {
-    dbConnect
+    dbConnect,
+    dbDisconnect
 };
