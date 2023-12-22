@@ -71,10 +71,38 @@ router.get("/hairstylists", async (request, response) => {
 
 // Create a new user
 // No auth needed
+// // POST /users
+// router.post("/", async (request, response) => {
+//   try {
+//     const newUser = await User.create(request.body);
+//     response.json(newUser);
+//   } catch (error) {
+//     response.status(500).json({ error: error.message });
+//   }
+// });
+
+// Create a new user
+// No auth needed
 // POST /users
+// Allows for services to be added in Admin Add User
 router.post("/", async (request, response) => {
   try {
-    const newUser = await User.create(request.body);
+    // Extract user data from the request body
+    const { firstName, lastName, mobileNumber, email, password, is_admin, is_hairstylist, bio, selectedServices } = request.body;
+
+    // Create a new user instance
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      mobileNumber,
+      email,
+      password,
+      is_admin,
+      is_hairstylist,
+      bio,
+      services: selectedServices, // Associate selected services with the user
+    });
+
     response.json(newUser);
   } catch (error) {
     response.status(500).json({ error: error.message });
