@@ -20,21 +20,21 @@ async function dbConnect() {
 
     try {
         await mongoose.connect(dbUri);
-
         console.log("Database connected.");
-      
-        // console.log("Database connected to " + dbUri);
     } catch (error) {
-        console.log(`Database failed to connect. Error:\n${JSON.stringify(error)}`);
+        console.log("Database failed to disconnect. Error: " + error);
     }
 };
 
 
 // Disconnect from database
 async function dbDisconnect() {
-    await mongoose.connection.close();
-
-    console.log("Database disconnected.");
+    try {
+        await mongoose.connection.close();
+        console.log("Database disconnected.");
+    } catch (error) {
+        console.log("Database failed to disconnect. Error: " + error);
+    }
 }
 
 
