@@ -125,8 +125,8 @@ dbConnect().then(async ()=> {
     let appointmentConsultation = new Appointment({
         client: newUser._id,
 
-        startDateTime: new Date("2023-12-15 14:00"),
-        endDateTime: new Date("2023-12-15 14:15"),
+        startDateTime: new Date("2024-02-15 14:00"),
+        endDateTime: new Date("2024-02-15 14:15"),
         hairstylist: newHairstylist1._id,
         service: consultation._id,
         duration: consultation.duration,
@@ -135,8 +135,8 @@ dbConnect().then(async ()=> {
 
     let appointmentConsultation2 = new Appointment({
         client: newUser._id,
-        startDateTime: new Date("2023-12-12 10:00"),
-        endDateTime: new Date("2023-12-12 10:15"),
+        startDateTime: new Date("2024-02-02 10:00"),
+        endDateTime: new Date("2024-02-02 10:15"),
         hairstylist: newHairstylist2._id,
         service: consultation._id,
         duration: consultation.duration,
@@ -144,8 +144,8 @@ dbConnect().then(async ()=> {
 
     let appointmentCutAndColour = new Appointment({
         client: newUser._id,
-        startDateTime: new Date("2023-12-17 12:00"),
-        endDateTime: new Date("2023-12-17 14:30"),
+        startDateTime: new Date("2024-02-17 12:00"),
+        endDateTime: new Date("2024-02-17 14:30"),
         hairstylist: newHairstylist1._id,
         service: cutAndColour._id,
         duration: cutAndColour.duration,
