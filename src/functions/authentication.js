@@ -36,9 +36,12 @@ function generateJwt(userId, isAdmin, isHairstylist) {
 
 // Validate JWT
 function validateJwt(request, response, next) {
+    let suppliedToken;
+    let decodedToken;
+
     try {
         // Grab the JWT from the header
-        let suppliedToken = request.headers.authtoken;
+        suppliedToken = request.headers.authtoken;
     
         // Handle if no token found
         if (!suppliedToken) {
@@ -49,13 +52,14 @@ function validateJwt(request, response, next) {
         
         // Verify if the JWT is valid
         // jwt.verify(token, secretorPublicKey, options)
-        const decodedToken = jwt.verify(suppliedToken, process.env.JWT_SECRETKEY);
+        decodedToken = jwt.verify(suppliedToken, process.env.JWT_SECRETKEY);
     
         // Set the decoded token as the request.user
         request.user = decodedToken;
+
+        console.log(request.user);
     
         // Continue to next middleware
-        // console.log("User has been validated.");
         next();
     } catch (error) {
         // Handle error if issue with token

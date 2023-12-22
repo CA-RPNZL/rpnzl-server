@@ -3,8 +3,16 @@ const supertest = require("supertest");
 
 // Import app
 var {app} = require("../src/server.js");
+
+// Import database
 const { dbConnect, dbDisconnect } = require("../src/database.js");
+
 const authentication = require("../src/functions/authentication.js");
+
+// Import User model
+const { User } = require("../src/models/UserModel.js");
+
+
 
 
 // Connect to the database before all tests
@@ -34,7 +42,8 @@ describe("POST /users", () => {
             is_admin: false,
             is_hairstylist: false
         };
-        
+
+        // POST /users
         const response = await supertest(app)
         .post("/users")
         .send(newUser)
