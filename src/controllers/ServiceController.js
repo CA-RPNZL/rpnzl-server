@@ -51,7 +51,7 @@ router.get("/id/:id", async (request, response) => {
 router.post("/", validateJwt, authAsAdmin, async (request, response) => {
     try {
         let newService = await Service.create(request.body);
-        response.json(newService);
+        response.status(201).json(newService);
     } catch (error) {
         response.status(500).json({
             error: error

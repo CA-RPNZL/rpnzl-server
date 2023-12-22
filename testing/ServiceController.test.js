@@ -6,9 +6,10 @@ var {app} = require("../src/server.js")
 
 // Import database
 var {dbConnect, dbDisconnect} = require("../src/database.js");
-// const validateJwt = require("../src/functions/authentication.js");
 const authentication = require("../src/functions/authentication.js");
 const authAsAdmin = require("../src/functions/authorisation.js");
+
+// Import Service model
 const { Service } = require("../src/models/ServiceModel.js");
 
 // jest.mock("../src/functions/authentication.js");
@@ -40,53 +41,16 @@ describe("GET /services", () => {
 // POST /services
 describe("POST /services", () => {
     it("should create a new service", async ()=> {
-        const testJwt = authentication.generateJwt({
-            user_id: "testUserId",
-            is_Admin: true,
-            is_hairstylist: false
-        });
+        const testJwt = authentication.generateJwt(
+            "testUserId",
+            true,
+            false
+        );
 
         console.log("testJwt: " + testJwt);
 
-        const request = {
-            headers: {
-                authtoken: testJwt
-            }
-        }
-        const validateTestJwt = authentication.validateJwt(request, response, next);
-
-        // const needUser = await supertest(app)
-        // .post("/users/login")
-        // .send({
-        //     email: "test@mail.com",
-        //     passworD: "Password1!"
-        // });
-
-        // const testJwt = await needUser.body.jwt;
-
-        // Mock validateJwt
-        // const validateJwt = jest.fn();
-        // console.log(validateJwt());
-        // validateJwt.mockImplementation((request, response, next) => {
-        //     request.user = { userId: "mockUserId"};
-        //     next();
-        // });
-        
-        // jest.spyOn(authentication, "validateJwt").mockResolvedValue((request, response, next) => {
-        //     request.user = { userId: "mockUserId"};
-        //     next();
-        // });
-
-
-        
-
-        // Mock authAsAdmin
-        const authAsAdmin = jest.fn();
-        console.log(authAsAdmin());
-
-
         const newService = {
-            name: "Test service",
+            name: "Bad haircut",
             price: "$200",
             description: "We cannot guarantee a good haircut.",
             duration: 60
@@ -97,13 +61,14 @@ describe("POST /services", () => {
         const response = await supertest(app)
         .post("/services")
         .send(newService)
-        .set("Content-Type", "application/json");
-        // .set("authtoken", "mockAuthToken");
+        .set("Content-Type", "application/json")
+        .set("authtoken", testJwt);
 
         console.log(response.body);
 
         expect(response.statusCode).toBe(201);
         expect(response.body).toHaveProperty("name");
+        expect(response.body.name).toBe(newService.name);
     });
 });
 
@@ -133,7 +98,7 @@ describe("GET /services/id/:id", () => {
 
 // PATCH /services/id/:id
 describe("PATCH /services/id/:id", () => {
-    it("should update the service with id of :id", async () => {
+    it("should update the service with id of :id with the provided details", async () => {
         const updatedService = {
             name: "Keratin treatment"
         };
