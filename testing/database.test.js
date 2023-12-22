@@ -1,35 +1,50 @@
 // //  Import Supertest
-const request = require("supertest");
+const supertest = require("supertest");
 
 // Import Mongoose
 const mongoose = require("mongoose");
 
+// Import and configure dotenv
+require("dotenv").config();
+
 // // Import app
-var {app} = require("../src/server.js")
+var {app} = require("../src/server.js");
 
 // // Import database
 var {dbConnect, dbDisconnect} = require("../src/database.js");
 
+// Mock Mongoose
+// Connections to mongoose will be mocks
+jest.mock("mongoose");
 
 
-describe("Database connection", () => {
-    it("should connect to the development DB URI", async () => {
-        process.eventNames.NODE_ENV = "developement";
-        await dbConnect();
-
-        expect(mongoose.connect).toHaveBeenCalledWith("mongodb://localhost:27017/rpnzl")
-    });
-    
-    it("should successfully connect to database", async () => {
-        const response = await dbConnect();
-        expect(mongoose.connection.on)
-    });
+// Reset any mocks before each test
+beforeAll(async () => {
+    jest.resetModules();
 });
 
 
 describe("Database connection", () => {
-    it("should successfully disconnect to database", async () => {
-        const response = await dbDisconnect();
-        expect(!mongoose.connection.on)
+    // Test environment = development
+    it("should connect to the development DB URI", async () => {
+        process.env.NODE_ENV = "development";
+        await dbConnect();
+        expect(mongoose.connect).toHaveBeenCalledWith("mongodb://localhost:27017/rpnzl");
+    });
+
+    // Test environment = production
+    it("should connect to the production DB URI", async () => {
+        process.env.NODE_ENV = "production";
+        await dbConnect();
+
+        expect(mongoose.connect).toHaveBeenCalledWith(process.env.DB_URI);
+    });
+
+    // Test environment = test
+    it("should connect to the test DB URI", async () => {
+        process.env.NODE_ENV = "test";
+        await dbConnect();
+
+        expect(mongoose.connect).toHaveBeenCalledWith("mongodb://localhost:27017/rpnzl");
     });
 });
