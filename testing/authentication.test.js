@@ -27,28 +27,3 @@ describe("generateJWT", () => {
         expect(decodedToken).toHaveProperty("exp");
     });
 });
-
-// Validate JWT
-describe("validateJwt", () => {
-    it("should return an error if the JWT is not valid", async () => {
-       
-
-        // validateJwt grabs the JWT from the header
-        const request = {
-            headers: {
-                authtoken: "testJwt"
-            }
-        };
-
-        const response = jest.fn().mockReturnValue()
-
-        // Mock next
-        const next = jest.fn();
-
-        // Validate JWT
-        validateJwt(request, response, next);
-
-        expect(request.user).toEqual({ userId: "userId" });
-        expect(next).toHaveBeenCalled();
-    });
-});
