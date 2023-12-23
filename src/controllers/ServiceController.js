@@ -10,6 +10,10 @@ const mongoose = require("mongoose");
 // Import Service model
 const { Service } = require("../models/ServiceModel");
 
+// Import Appointment model
+const { Appointment } = require("../models/AppointmentModel");
+
+
 // Import middleware
 const { validateJwt } = require("../functions/authentication");
 const { authAsAdmin } = require("../functions/authorisation");
@@ -84,16 +88,26 @@ router.patch("/id/:id", validateJwt, authAsAdmin, async (request, response) => {
 // DELETE /services/id/:id
 router.delete("/id/:id", validateJwt, authAsAdmin, async (request, response) => {
     try {
-        let result = await Service.findByIdAndDelete(request.params.id);
+        const serviceId = request.params.id;
+        const service = await Service.findById(serviceId);
     
-        response.json({
-            deletedService: result
+        if (!service) {
+          return res.status(404).json({ error: 'Service not found' });
+        }
+        
+        await Appointment.deleteMany({
+          service: serviceId,
+          startDateTime: { $gte: new Date() }
         });
-    } catch (error) {
-        response.status(500).json({
-            error: error
-        })
-    }
+    
+        // Delete the service account
+        const deletedService = await Service.findByIdAndDelete(serviceId);
+    
+        response.json({ deletedService, message: 'Service account and future appointments deleted successfully.' });
+      } catch (error) {
+        response.status(500).json({ error: error.message });
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
 });
 
 
