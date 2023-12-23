@@ -19,7 +19,7 @@ function authAsUser(request, response, next) {
     const targetUser = request.params.id;
     // Check  if the logged in user is the user
     if (loggedInUser === targetUser) {
-        console.log("Authorised as logged in user");
+        // console.log("Authorised as logged in user");
         next();
     } else {
         // Handle error if logged in user is not the user

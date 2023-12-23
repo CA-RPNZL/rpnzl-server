@@ -56,8 +56,6 @@ function validateJwt(request, response, next) {
     
         // Set the decoded token as the request.user
         request.user = decodedToken;
-
-        console.log(request.user);
     
         // Continue to next middleware
         next();
