@@ -3,6 +3,9 @@ const supertest = require("supertest");
 // Import Mongoose
 const mongoose = require("mongoose");
 
+// Import bcrypt
+const bcrypt = require("bcryptjs/dist/bcrypt");
+
 // Import app
 var {app} = require("../src/server.js");
 
@@ -26,6 +29,7 @@ beforeAll(async () => {
 afterAll(async () => {
     await dbDisconnect();
 });
+
 
 
 describe("POST /login", () => {
@@ -78,7 +82,55 @@ describe("POST /login", () => {
 
 // PATCH a user - update user password
 // Uses middleware: validateJwt, authAsUser
-describe("PATCH /changepassword/:id", () => {
+describe("PATCH /changepassword/:id", () => {        
+        
+    it("should update a user's password with the new password", async () => {
+        
+    // Mock a user result
+    // Create a mongoose _id
+    const mockUserId = new mongoose.Types.ObjectId().toString();
+    let mockPassword = "Password1!"
+    let passwordSalt = await bcrypt.genSalt(10);
+    const mockHashedPassword = await bcrypt.hash(mockPassword, passwordSalt);
+    
+    jest.spyOn(User, "findById").mockResolvedValue({
+        _id: mockUserId,
+        firstName: "Marty",
+        lastName: "McFly",
+        mobileNumber: "0400 123 123",
+        email: "marty@email.com",
+        password: mockHashedPassword,
+        is_admin: false,
+        is_hairstylist: false,
+        save: jest.fn() // mock save function
+    });
+    // Generate a JWT - user ID = mockUserId
+    // generateJwt(userId, isAdmin, isHairstylist)
+    const testJwt = authentication.generateJwt(
+        mockUserId,
+        false,
+        false
+    );
+
+        const updatedPassword = {
+            oldPassword: "Password1!",
+            newPassword: "Welcome1!"
+        };
+
+        const response = await supertest(app)
+        .patch("/changepassword/" + mockUserId)
+        .send(updatedPassword)
+        .set("Content-Type", "application/json")
+        .set("authtoken", testJwt);
+
+        console.log(response.body);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.message).toBe("Successfully changed password");
+    });
+
+    it("should return an error if no password is supplied", async () => {
+        
     // Mock a user result
     // Create a mongoose _id
     const mockUserId = new mongoose.Types.ObjectId().toString();
@@ -93,7 +145,6 @@ describe("PATCH /changepassword/:id", () => {
         is_admin: false,
         is_hairstylist: false
     });
-        
     // Generate a JWT - user ID = mockUserId
     // generateJwt(userId, isAdmin, isHairstylist)
     const testJwt = authentication.generateJwt(
@@ -101,26 +152,6 @@ describe("PATCH /changepassword/:id", () => {
         false,
         false
     );
-        
-    // it("should update a user's password with the new password", async () => {
-    //     const updatedPassword = {
-    //         oldPassword: "Password1!",
-    //         newPassword: "Welcome1!"
-    //     };
-
-    //     const response = await supertest(app)
-    //     .patch("/changepassword/" + mockUserId)
-    //     .send(updatedPassword)
-    //     .set("Content-Type", "application/json")
-    //     .set("authtoken", testJwt);
-
-    //     console.log(response.body);
-
-    //     expect(response.statusCode).toBe(200);
-    //     expect(response.body.message).toBe("Successfully changed password.");
-    // });
-
-    it("should return an error if no password is supplied", async () => {
         const updatedPassword = {
             oldPassword: "",
             newPassword: ""
@@ -137,6 +168,28 @@ describe("PATCH /changepassword/:id", () => {
     });
 
     it("should return an error if current password is incorrect", async () => {
+        
+    // Mock a user result
+    // Create a mongoose _id
+    const mockUserId = new mongoose.Types.ObjectId().toString();
+    
+    jest.spyOn(User, "findById").mockResolvedValue({
+        _id: mockUserId,
+        firstName: "Marty",
+        lastName: "McFly",
+        mobileNumber: "0400 123 123",
+        email: "marty@email.com",
+        password: "Password1!",
+        is_admin: false,
+        is_hairstylist: false
+    });
+    // Generate a JWT - user ID = mockUserId
+    // generateJwt(userId, isAdmin, isHairstylist)
+    const testJwt = authentication.generateJwt(
+        mockUserId,
+        false,
+        false
+    );
         const updatedPassword = {
             oldPassword: "Password3!",
             newPassword: "Password2!"
