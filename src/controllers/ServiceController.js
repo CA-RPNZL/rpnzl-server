@@ -55,7 +55,7 @@ router.get("/id/:id", async (request, response) => {
 router.post("/", validateJwt, authAsAdmin, async (request, response) => {
     try {
         let newService = await Service.create(request.body);
-        response.json(newService);
+        response.status(201).json(newService);
     } catch (error) {
         response.status(500).json({
             error: error
@@ -73,7 +73,8 @@ router.patch("/id/:id", validateJwt, authAsAdmin, async (request, response) => {
         let result = await Service.findByIdAndUpdate(request.params.id, request.body, { returnDocument: "after" });
 
         response.json({
-            updatedService: result
+            updatedService: result,
+            message: "Service updated successfully."
         });
     } catch (error) {
         response.status(500).json({
@@ -103,11 +104,15 @@ router.delete("/id/:id", validateJwt, authAsAdmin, async (request, response) => 
         // Delete the service account
         const deletedService = await Service.findByIdAndDelete(serviceId);
     
-        response.json({ deletedService, message: 'Service account and future appointments deleted successfully.' });
+        response.json({
+            deletedService,
+            message: 'Service account and future appointments deleted successfully.'
+        });
       } catch (error) {
-        response.status(500).json({ error: error.message });
-        res.status(500).json({ error: 'Internal Server Error' });
-      }
+        response.status(500).json({
+            error: error.message
+        });
+      };
 });
 
 

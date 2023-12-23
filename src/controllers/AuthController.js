@@ -79,28 +79,30 @@ router.patch("/changepassword/:id", validateJwt, authAsUser, async (request, res
         // if either or both null, return with error
         if (!(oldPassword && newPassword)) {
             return response.status(400).json({message: "Invalid request"})
-        }
+        };
 
         const user = await User.findById(request.params.id);
-        console.log("user is: ");
-        console.log(user);
+        
         if (!user) {
-            return response.status(404).json({ message: "User not found" });
-        }
+            return response.status(404).json({ message: "User does not exist." });
+        };
 
         const correctPassword = await comparePassword(oldPassword, user.password);
         if (!correctPassword) {
             return response.status(401).json({message: "Invalid current password"})
-        }
+        };
 
         user.password = newPassword;
         await user.save();
 
-        return response.status(200).json({message: "Successfully changed password"})
-
+        return response.status(200).json({
+            message: "Successfully changed password"
+        });
     } catch (error) {
-      response.status(500).json({ error: error.message });
-    }
+        response.status(500).json({
+            error: error.message
+        });
+    };
 });
 
 

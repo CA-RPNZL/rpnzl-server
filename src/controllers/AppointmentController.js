@@ -26,9 +26,9 @@ router.get("/", validateJwt, authAsAdmin, async (request, response) => {
     
     // Now you can use populate with the "Service" model
     const result = await Appointment.find({})
-    .populate('client', 'firstName lastName') // Populate client with firstName and lastName fields
-    .populate('hairstylist', 'firstName lastName services') // Populate hairstylist with firstName field
-    .populate('service', 'name duration'); // Populate service with name field
+    .populate("client", "firstName lastName") // Populate client with firstName and lastName fields
+    .populate("hairstylist", "firstName lastName services") // Populate hairstylist with firstName field
+    .populate("service", "name duration"); // Populate service with name field
     
     response.json(result);
   } catch (error) {
@@ -174,12 +174,23 @@ router.post("/", validateJwt, async (request, response) => {
 // Need client, hairstylist or admin auth
 // PATCH /appointments/id/:id
 router.patch("/id/:id", validateJwt, async (request, response) => {
-  // Show updated service
-  let result = await Appointment.findByIdAndUpdate(request.params.id, request.body, { returnDocument: "after" }).catch(error => error);
-
-  response.json({
-      updatedAppointment: result
-  });
+  try {
+    // Show updated service
+    let result = await Appointment.findByIdAndUpdate(
+      request.params.id, 
+      request.body, 
+      { returnDocument: "after" }
+    );
+  
+    response.json({
+        updatedAppointment: result,
+        message: "Appointment updated successfully."
+    });
+  } catch (error) {
+    response.status(500).json({
+        error: error
+    });
+  };
 });
 
 
@@ -187,11 +198,19 @@ router.patch("/id/:id", validateJwt, async (request, response) => {
 // Need client, hairstylist or admin auth
 // DELETE /appointments/id/:id
 router.delete("/id/:id", validateJwt, async (request, response) => {
-  let result = await Appointment.findByIdAndDelete(request.params.id);
+  try {
+    let result = await Appointment.findByIdAndDelete(request.params.id);
+  
+    response.json({
+        deletedAppointment: result,
+        message: "Appointment deleted successfully."
+    });
 
-  response.json({
-      deletedAppointment: result
-  });
+  } catch (error) {
+    response.status(500).json({
+        error: error
+    });
+  };
 });
 
 

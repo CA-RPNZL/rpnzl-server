@@ -60,6 +60,15 @@ app.use("/users", userController);
 const appointmentController = require("./controllers/AppointmentController");
 app.use("/appointments", appointmentController);
 
+// Attach error route
+app.get("*", (request, response) => {
+    response.status(404).json({
+        message: "This path could not be found!",
+        attemptedPath: request.path
+    });
+});
+
+
 module.exports = {
     app
 }
