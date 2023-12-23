@@ -68,23 +68,10 @@ router.get("/hairstylists", async (request, response) => {
   }
 });
 
-
-// Create a new user
-// No auth needed
-// // POST /users
-// router.post("/", async (request, response) => {
-//   try {
-//     const newUser = await User.create(request.body);
-//     response.json(newUser);
-//   } catch (error) {
-//     response.status(500).json({ error: error.message });
-//   }
-// });
-
 // Create a new user
 // No auth needed
 // POST /users
-// Allows for services to be added in Admin Add User
+// Allows for services to be added in Admin Portal: add user
 router.post("/", async (request, response) => {
   try {
     // Extract user data from the request body
@@ -120,10 +107,15 @@ router.patch("/id/:id", validateJwt, authAsAdminOrUser, async (request, response
       request.body,
       { returnDocument: "after" }
     );
-    response.json({ updatedUser: result });
+    response.json({ 
+      updatedUser: result,
+      message: "User account updated successfully."
+    });
   } catch (error) {
-    response.status(500).json({ error: error.message });
-  }
+    response.status(500).json({
+      error: error.message
+    });
+  };
 });
 
 
@@ -136,8 +128,8 @@ router.delete("/id/:id", validateJwt, authAsAdminOrUser, async (request, respons
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+      return response.status(404).json({ error: 'User not found' });
+    };
 
     // Delete future appointments where user is a hairstylist
     if (user.is_hairstylist) {
@@ -145,7 +137,8 @@ router.delete("/id/:id", validateJwt, authAsAdminOrUser, async (request, respons
         hairstylist: userId,
         startDateTime: { $gte: new Date() }
       })
-    }
+    };
+
     // Delete future appointments where user is the client
     await Appointment.deleteMany({
       client: userId,
@@ -155,11 +148,15 @@ router.delete("/id/:id", validateJwt, authAsAdminOrUser, async (request, respons
     // Delete the user account
     const deletedUser = await User.findByIdAndDelete(userId);
 
-    response.json({ deletedUser, message: 'User account and future appointments deleted successfully.' });
+    response.json({
+      deletedUser,
+      message: "User account and future appointments deleted successfully."
+    });
   } catch (error) {
-    response.status(500).json({ error: error.message });
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+    response.status(500).json({
+      error: error.message
+    });
+  };
 });
 
 

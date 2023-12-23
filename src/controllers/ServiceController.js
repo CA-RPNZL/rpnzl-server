@@ -69,7 +69,8 @@ router.patch("/id/:id", validateJwt, authAsAdmin, async (request, response) => {
         let result = await Service.findByIdAndUpdate(request.params.id, request.body, { returnDocument: "after" });
 
         response.json({
-            updatedService: result
+            updatedService: result,
+            message: "Service updated successfully."
         });
     } catch (error) {
         response.status(500).json({
@@ -87,13 +88,14 @@ router.delete("/id/:id", validateJwt, authAsAdmin, async (request, response) => 
         let result = await Service.findByIdAndDelete(request.params.id);
     
         response.json({
-            deletedService: result
+            deletedService: result,
+            message: "Service deleted successfully."
         });
     } catch (error) {
         response.status(500).json({
             error: error
-        })
-    }
+        });
+    };
 });
 
 
