@@ -10,7 +10,6 @@
     "dev": "NODE_ENV=development nodemon src/index.js",
     "seed": "NODE_ENV=production node src/seed.js",
     "dev-seed": "NODE_ENV=development nodemon src/seed.js",
-    "prod-wipe": "NODE_ENV=production WIPE=true node src/wipe.js",
     "dev-wipe": "NODE_ENV=development WIPE=true node src/wipe.js"
   },
   "keywords": [],
