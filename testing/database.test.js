@@ -28,14 +28,15 @@ describe("Database connection", () => {
     // Test environment = development
     it("should connect to the development DB URI", async () => {
         process.env.NODE_ENV = "development";
-        await dbConnect();
+        const response = await dbConnect();
+
         expect(mongoose.connect).toHaveBeenCalledWith("mongodb://localhost:27017/rpnzl");
     });
 
     // Test environment = production
     it("should connect to the production DB URI", async () => {
         process.env.NODE_ENV = "production";
-        await dbConnect();
+        const response = await dbConnect();
 
         expect(mongoose.connect).toHaveBeenCalledWith(process.env.DB_URI);
     });
@@ -43,7 +44,7 @@ describe("Database connection", () => {
     // Test environment = test
     it("should connect to the test DB URI", async () => {
         process.env.NODE_ENV = "test";
-        await dbConnect();
+        const response = await dbConnect();
 
         expect(mongoose.connect).toHaveBeenCalledWith("mongodb://localhost:27017/rpnzl");
     });
