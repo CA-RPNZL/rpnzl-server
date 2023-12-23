@@ -34,6 +34,8 @@ beforeAll(async () => {
 
 // Disconnect from the database after all tests
 afterAll(async () => {
+  await Appointment.deleteOne({ startDateTime: new Date("11/11/2024 11:00 am") })
+  console.log("Test appointment on 11/11/2024 deleted.");
     await dbDisconnect();
 });
 
