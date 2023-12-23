@@ -61,10 +61,9 @@ function validateJwt(request, response, next) {
         next();
     } catch (error) {
         // Handle error if issue with token
-        console.log("suppliedToken is: " + suppliedToken);
-        console.log("decodedToken is: " + decodedToken);
-        console.log("User has not been validated.");
-        return response.status(401).json({
+        // console.log("suppliedToken is: " + suppliedToken);
+        // console.log("decodedToken is: " + decodedToken);
+        response.status(401).json({
             error: "Unauthorised - invalid token."
         });
     };
