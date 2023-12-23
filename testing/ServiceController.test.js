@@ -172,6 +172,6 @@ describe("DELETE /services/id/:id", () => {
         .set("authtoken", testJwt);
 
         expect(response.statusCode).toBe(200);
-        expect(response.body.message).toBe("Service deleted successfully.");
+        expect(response.body.message).toBe("Service account and future appointments deleted successfully.");
     });
 });

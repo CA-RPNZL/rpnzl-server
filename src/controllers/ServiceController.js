@@ -104,11 +104,15 @@ router.delete("/id/:id", validateJwt, authAsAdmin, async (request, response) => 
         // Delete the service account
         const deletedService = await Service.findByIdAndDelete(serviceId);
     
-        response.json({ deletedService, message: 'Service account and future appointments deleted successfully.' });
+        response.json({
+            deletedService,
+            message: 'Service account and future appointments deleted successfully.'
+        });
       } catch (error) {
-        response.status(500).json({ error: error.message });
-        res.status(500).json({ error: 'Internal Server Error' });
-      }
+        response.status(500).json({
+            error: error.message
+        });
+      };
 });
 
 
