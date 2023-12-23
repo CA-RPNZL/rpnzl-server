@@ -1,10 +1,19 @@
 const supertest = require("supertest");
 
+// Import Mongoose
+const mongoose = require("mongoose");
+
 // Import app
 var {app} = require("../src/server.js");
 
 // Import database
 const { dbConnect, dbDisconnect } = require("../src/database.js");
+
+// Import authentication.js
+const authentication = require("../src/functions/authentication.js");
+
+// Import User model
+const { User } = require("../src/models/UserModel.js");
 
 
 // Connect to the database before all tests
@@ -19,9 +28,8 @@ afterAll(async () => {
 });
 
 
-// Error: Exceeded timeout of 5000 ms for a test.
 describe("POST /login", () => {
-    it("should attempt to log a user in with the provided details", async () => {
+    it("should allow an existing user to log in with their details", async () => {
         const testLoginDetails = {
             email: "bianca@mail.com",
             password: "clientpassword"
@@ -31,9 +39,116 @@ describe("POST /login", () => {
         .post("/login")
         .send(testLoginDetails)
         .set("Content-Type", "application/json");
-        console.log(response.body);
 
         expect(response.statusCode).toBe(200);
-        // Add more expects
-    })
-})
+    });
+
+
+    it("should return an error if user doesn't exist", async () => {
+        const testLoginDetails = {
+            email: "newuser@mail.com",
+            password: "Password1!"
+        };
+
+        const response = await supertest(app)
+        .post("/login")
+        .send(testLoginDetails)
+        .set("Content-Type", "application/json");
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toBe("User does not exist.");
+    });
+
+    it("should not allow a user to log in with an incorrect password", async () => {
+        const testLoginDetails = {
+            email: "bianca@mail.com",
+            password: "Password1!"
+        };
+
+        const response = await supertest(app)
+        .post("/login")
+        .send(testLoginDetails)
+        .set("Content-Type", "application/json");
+
+        expect(response.statusCode).toBe(401);
+        expect(response.body.error).toBe("Wrong password, please try again.");
+    });
+
+});
+
+// PATCH a user - update user password
+// Uses middleware: validateJwt, authAsUser
+describe("PATCH /changepassword/:id", () => {
+    // Mock a user result
+    // Create a mongoose _id
+    const mockUserId = new mongoose.Types.ObjectId().toString();
+    
+    jest.spyOn(User, "findById").mockResolvedValue({
+        _id: mockUserId,
+        firstName: "Marty",
+        lastName: "McFly",
+        mobileNumber: "0400 123 123",
+        email: "marty@email.com",
+        password: "Password1!",
+        is_admin: false,
+        is_hairstylist: false
+    });
+        
+    // Generate a JWT - user ID = mockUserId
+    // generateJwt(userId, isAdmin, isHairstylist)
+    const testJwt = authentication.generateJwt(
+        mockUserId,
+        false,
+        false
+    );
+        
+    // it("should update a user's password with the new password", async () => {
+    //     const updatedPassword = {
+    //         oldPassword: "Password1!",
+    //         newPassword: "Welcome1!"
+    //     };
+
+    //     const response = await supertest(app)
+    //     .patch("/changepassword/" + mockUserId)
+    //     .send(updatedPassword)
+    //     .set("Content-Type", "application/json")
+    //     .set("authtoken", testJwt);
+
+    //     console.log(response.body);
+
+    //     expect(response.statusCode).toBe(200);
+    //     expect(response.body.message).toBe("Successfully changed password.");
+    // });
+
+    it("should return an error if no password is supplied", async () => {
+        const updatedPassword = {
+            oldPassword: "",
+            newPassword: ""
+        };
+
+        const response = await supertest(app)
+        .patch("/changepassword/" + mockUserId)
+        .send(updatedPassword)
+        .set("Content-Type", "application/json")
+        .set("authtoken", testJwt);
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe("Invalid request");
+    });
+
+    it("should return an error if current password is incorrect", async () => {
+        const updatedPassword = {
+            oldPassword: "Password3!",
+            newPassword: "Password2!"
+        };
+
+        const response = await supertest(app)
+        .patch("/changepassword/" + mockUserId)
+        .send(updatedPassword)
+        .set("Content-Type", "application/json")
+        .set("authtoken", testJwt);
+
+        expect(response.statusCode).toBe(401);
+        expect(response.body.message).toBe("Invalid current password");
+    });
+});

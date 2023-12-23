@@ -67,7 +67,7 @@ describe("GET /users", () => {
 
 
 // GET user by user ID
-// Uses middleware:  validateJwt, authAsAdminOrUser
+// Uses middleware: validateJwt, authAsAdminOrUser
 describe("GET /users/id/:id", () => {
     it("should return user with id of :id", async () => {
         // Generate a JWT - isAdmin = true
@@ -149,7 +149,7 @@ describe("POST /users", () => {
 
 // PATCH a user - update user details
 // Uses middleware: validateJwt, authAsAdminOrUser
-describe("PATCH /id/:id", () => {
+describe("PATCH /users/id/:id", () => {
     it("should update the user's details with id of :id with the provided details", async () => {
         // Mock a user result
         // Create a mongoose _id
@@ -194,7 +194,7 @@ describe("PATCH /id/:id", () => {
 
 // DELETE a user
 // Uses middleware: validateJwt, authAsAdminOrUser
-describe("DELETE /id/:id", () => {
+describe("DELETE /users/id/:id", () => {
     it("should delete the user with id of :id", async () => {
         // Mock a user result
         // Create a mongoose _id
@@ -226,5 +226,40 @@ describe("DELETE /id/:id", () => {
 
         expect(response.statusCode).toBe(200);
         expect(response.body.message).toBe("User account and future appointments deleted successfully.");
+    });
+
+    
+    it("should not delete the user with id of :id if the user isn't the admin or targeted user", async () => {
+        // Mock a user result
+        // Create a mongoose _id
+        const mockUserId = new mongoose.Types.ObjectId().toString();
+        const mockNotUserId = new mongoose.Types.ObjectId().toString();
+
+        jest.spyOn(User, "findById").mockResolvedValue({
+            _id: mockUserId,
+            firstName: "Marty",
+            lastName: "McFly",
+            mobileNumber: "0400 123 123",
+            email: "marty@email.com",
+            password: "Password1!",
+            is_admin: false,
+            is_hairstylist: false
+        });
+        
+        // Generate a JWT - user ID = mockUserId
+        // generateJwt(userId, isAdmin, isHairstylist)
+        const testJwt = authentication.generateJwt(
+            mockNotUserId,
+            false,
+            false
+        );
+
+        // DELETE /users/id/mockUserId
+        const response = await supertest(app)
+        .delete("/users/id/" + mockUserId)
+        .set("authtoken", testJwt);
+
+        expect(response.statusCode).toBe(403);
+        expect(response.body.error).toBe("You do not have authorisation to proceed.");
     });
 });
