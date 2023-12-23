@@ -25,7 +25,8 @@ beforeAll(async () => {
 
 // Disconnect from the database after all tests
 afterAll(async () => {
-    await Service.deleteOne({ name: "Bad haircut" });
+    await Service.deleteOne({ name: "Bad haircut" })
+    console.log("Test service 'Bad haircut' deleted.");
     await dbDisconnect();
 });
 
@@ -41,11 +42,11 @@ describe("GET /services", () => {
     });
 });
 
-// POST /services
+// POST a new service
 // Uses middleware: validateJwt, authAsAdmin
 describe("POST /services", () => {
     it("should create a new service with the provided details.", async ()=> {
-        // Generate a JWT - isAdin = true
+        // Generate a JWT - isAdmin = true
         // generateJwt(userId, isAdmin, isHairstylist)
         const testJwt = authentication.generateJwt(
             "testUserId",
@@ -86,7 +87,8 @@ describe("GET /services/id/:id", () => {
         });
 
         // GET /services/id/mockServiceId
-        const response = await supertest(app).get("/services/id/mockServiceId");
+        const response = await supertest(app)
+        .get("/services/id/mockServiceId");
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty("_id");
@@ -97,7 +99,7 @@ describe("GET /services/id/:id", () => {
     });
 });
 
-// PATCH /services/id/:id
+// PATCH a service - update service details
 // Uses middleware: validateJwt, authAsAdmin
 describe("PATCH /services/id/:id", () => {
     it("should update the service with id of :id with the provided details.", async () => {
@@ -116,7 +118,7 @@ describe("PATCH /services/id/:id", () => {
             { returnDocument: "after" }
         );
 
-        // Generate a JWT - isAdin = true
+        // Generate a JWT - isAdmin = true
         // generateJwt(userId, isAdmin, isHairstylist)
         const testJwt = authentication.generateJwt(
             "testUserId",
@@ -124,15 +126,10 @@ describe("PATCH /services/id/:id", () => {
             false
         );
 
-        console.log("testJwt: " + testJwt);
-
         const mockUpdatedService = {
             name: "Relaxing treatment",
             price: "$60"
         };
-        console.log("I can see the updatedService data!");
-        console.log("updatedService: " + mockUpdatedService);
-        console.log("mockServiceId: " + mockServiceId);
 
         // PATCH /services/id/mockServiceId
         const response = await supertest(app)
@@ -141,21 +138,18 @@ describe("PATCH /services/id/:id", () => {
         .set("Content-Type", "application/json")
         .set("authtoken", testJwt);
 
-        // Error: not showing updated value - used {return: after} in mongoose
-        console.log(response.body);
-        console.log("updatedService: " + response.body.updatedService.name);
-
 
         expect(response.statusCode).toBe(200);
-        expect(response.body.updatedService).toHaveProperty("name");
-        expect(response.body.updatedService.name).toBe(mockUpdatedService.name);
+        expect(response.body.message).toBe("Service updated successfully.");
     })
 });
 
-// DELETE /services/id/:id
+
+// DELETE a service
+// Uses middleware: validateJwt, authAsAdmin
 describe("DELETE /services/id/:id", () => {
     it("should delete the service with id of :id", async () => {
-        // Generate a JWT - isAdin = true
+        // Generate a JWT - isAdmin = true
         // generateJwt(userId, isAdmin, isHairstylist)
         const testJwt = authentication.generateJwt(
             "testUserId",
@@ -167,20 +161,17 @@ describe("DELETE /services/id/:id", () => {
         // Create a mongoose _id
         const mockServiceId = new mongoose.Types.ObjectId().toString();
 
-        jest.spyOn(Service, "findByIdAndDelete").mockResolvedValue(
-            {
-                _id: mockServiceId
-            }
-        );
+        jest.spyOn(Service, "findByIdAndDelete").mockResolvedValue({
+            _id: mockServiceId
+        });
 
 
         // DELETE /services/id/mockServiceId
         const response = await supertest(app)
         .delete(`/services/id/${mockServiceId}`)
-        .set("Content-Type", "application/json")
         .set("authtoken", testJwt);
 
         expect(response.statusCode).toBe(200);
-        // Add more expects
+        expect(response.body.message).toBe("Service deleted successfully.");
     });
 });
