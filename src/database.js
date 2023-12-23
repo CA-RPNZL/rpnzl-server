@@ -22,7 +22,7 @@ async function dbConnect() {
         await mongoose.connect(dbUri);
         console.log("Database connected.");
     } catch (error) {
-        console.log("Database failed to disconnect. Error: " + error);
+        console.log("Database failed to connect. Error: " + error);
     }
 };
 
