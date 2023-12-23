@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test-coverage": "jest --coverage",
     "start": "NODE_ENV=production node src/index.js",
     "dev": "NODE_ENV=development nodemon src/index.js",
     "seed": "NODE_ENV=production node src/seed.js",
     "dev-seed": "NODE_ENV=development nodemon src/seed.js",
-    "prod-wipe": "NODE_ENV=production WIPE=true node src/wipe.js",
     "dev-wipe": "NODE_ENV=development WIPE=true node src/wipe.js"
   },
   "keywords": [],
@@ -25,6 +25,15 @@
     "mongoose": "^8.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testTimeout": 10000
   }
 }
