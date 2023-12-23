@@ -65,7 +65,7 @@ UserSchema.pre("save", async function (next) {
     }
 
     // hash and salt if password is new / updated
-    let passwordSalt = await bcrypt.genSalt(17);
+    let passwordSalt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(this.password, passwordSalt);
     this.password = hash;
     next();
