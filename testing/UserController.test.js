@@ -262,4 +262,25 @@ describe("DELETE /users/id/:id", () => {
         expect(response.statusCode).toBe(403);
         expect(response.body.error).toBe("You do not have authorisation to proceed.");
     });
+
+    
+    it("should return an error when it cannot delete a user that doesn't exist", async () => {
+        const fakeUserId = "fakeId";
+
+        
+        // Generate a JWT - user ID = mockUserId
+        // generateJwt(userId, isAdmin, isHairstylist)
+        const testJwt = authentication.generateJwt(
+            fakeUserId,
+            false,
+            false
+        );
+
+        // DELETE /users/id/mockUserId
+        const response = await supertest(app)
+        .delete("/users/id/" + fakeUserId)
+        .set("authtoken", testJwt);
+
+        expect(response.statusCode).toBe(500);
+    });
 });
