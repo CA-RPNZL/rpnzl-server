@@ -29,26 +29,26 @@ describe("generateJWT", () => {
 });
 
 // Validate JWT
-// describe("validateJwt", () => {
-//     it("should validate the JWT", () => {
-//         // validateJwt grabs the JWT from the header
-//         const request = {
-//             headers: {
-//                 authtoken: "testJwt"
-//             }
-//         };
+describe("validateJwt", () => {
+    it("should return an error if the JWT is not valid", async () => {
+       
 
-//         const response = jest.fn().mockReturnValue()
+        // validateJwt grabs the JWT from the header
+        const request = {
+            headers: {
+                authtoken: "testJwt"
+            }
+        };
 
-//         // Mock next
-//         const next = jest.fn();
+        const response = jest.fn().mockReturnValue()
 
-//         console.log(request.user);
+        // Mock next
+        const next = jest.fn();
 
-//         // Validate JWT
-//         validateJwt(request, response, next);
+        // Validate JWT
+        validateJwt(request, response, next);
 
-//         expect(request.user).toEqual({ userId: "userId" });
-//         expect(next).toHaveBeenCalled();
-//     });
-// });
+        expect(request.user).toEqual({ userId: "userId" });
+        expect(next).toHaveBeenCalled();
+    });
+});
